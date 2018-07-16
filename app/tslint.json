@@ -37,6 +37,7 @@
       ],
       "quotemark": [true, "double"],
       "semicolon": true,
+      "trailing-comma":false,
       "triple-equals": [true, "allow-null-check"],
       "typedef": [true,
         "callSignature",
