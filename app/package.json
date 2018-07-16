@@ -7,6 +7,10 @@
     "express": "^4.16.3",
     "typescript": "^2.9.2"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sotakarjut/typescript-backend-proto"
+  },
   "devDependencies": {
     "gulp-cache": "^1.0.2",
     "gulp-cached": "^1.1.1",
