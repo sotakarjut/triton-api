@@ -1,0 +1,21 @@
+version: "2"
+services:
+  web:
+    build: 
+      context: .
+      args:
+        - "PORT=${INTERNAL_DOCKER_PORT}"
+    ports:
+      - "${EXTERNAL_HOST_PORT}:${INTERNAL_DOCKER_PORT}"
+    links:
+      - postgredb
+    environment:
+      - "PORT=${INTERNAL_DOCKER_PORT}"
+
+  postgredb:
+    image: postgres
+    volumes:
+      - my_application_db:/data/db
+
+volumes:
+  my_application_db:
