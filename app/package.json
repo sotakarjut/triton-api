@@ -8,11 +8,13 @@
     "url": "https://github.com/sotakarjut/typescript-backend-proto"
   },
   "dependencies": {
+    "ajv": "^6.5.2",
     "async": "^2.6.1",
     "bcrypt": "^3.0.0",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
+    "mongoose": "^5.2.6",
     "typescript": "^2.9.2"
   },
   "devDependencies": {
