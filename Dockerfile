@@ -11,7 +11,8 @@ WORKDIR /app
 COPY ./app/ /app/
 
 RUN npm install
-RUN npm install --only-dev
+RUN npm run build
 
+EXPOSE $PORT
 USER nodeapp
 CMD ["npm", "start"]

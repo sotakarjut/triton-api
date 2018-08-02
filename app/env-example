@@ -1,0 +1,10 @@
+#
+# Copy this file into a new file called ".env" and modify it to contain
+# correct values for environment variables: SESSION_SECRET and 
+# MONGODB_URI 
+# NOTE: .env file should not be added to git as its contents are sensitive
+#
+
+SESSION_SECRET=ashdfjhasdlkjfhalksdjhflak
+
+MONGODB_URI=mongodb://mongodb:27017/dbname

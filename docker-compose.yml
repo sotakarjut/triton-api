@@ -1,6 +1,6 @@
 version: "2"
 services:
-  web:
+  server:
     build: 
       context: .
       args:
@@ -8,12 +8,12 @@ services:
     ports:
       - "${EXTERNAL_HOST_PORT}:${INTERNAL_DOCKER_PORT}"
     links:
-      - postgredb
+      - mongodb
     environment:
       - "PORT=${INTERNAL_DOCKER_PORT}"
 
-  postgredb:
-    image: postgres
+  mongodb:
+    image: mongo
     volumes:
       - my_application_db:/data/db
 
