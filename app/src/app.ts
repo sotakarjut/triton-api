@@ -1,11 +1,15 @@
 import bluebird from "bluebird";
 import bodyParser from "body-parser";
+import dotenv from "dotenv";
 import express from "express";
 import { Request, Response } from "express";
 import mongoose from "mongoose";
 
 import { MONGODB_URI, SESSION_SECRET } from "./util/secrets";
 // Create Express server
+
+dotenv.config({ path: ".env" });
+
 const app = express();
 
 // Connect to MongoDB
