@@ -10,7 +10,17 @@ Depending on your existing setup you need to install at least docker.
 
 The only thing you need is Docker. Get it [here](https://www.docker.com/community-edition)
 
-If you are running Windows, you might need to do some additional setup to get Docker working. Refer to [guide](https://docs.docker.com/docker-for-windows/) and [this](https://docs.docker.com/toolbox/toolbox_install_windows/#step-1-check-your-version) guide. At least run the quickstart to get started 
+If you are running Windows, you might need to do some additional setup to get Docker working. Refer to [guide](https://docs.docker.com/docker-for-windows/) and [this](https://docs.docker.com/toolbox/toolbox_install_windows/#step-1-check-your-version) guide. At least run the quickstart to get started.
+
+You will also need to modify the settings for the VirtualBox machine Docker is using.
+
+    Go to VirtualBox -> Your BOX -> Settings -> Network ->
+    Choose NAT
+    Open Advanced
+    Click Port Forwarding
+    Add new rule to map whatever port you need from host to guest(for example 3000 to 3000)
+    Click OK, OK
+    Then stop, start the BOX
 
 ### Development
 
