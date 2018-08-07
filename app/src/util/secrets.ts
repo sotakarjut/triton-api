@@ -5,6 +5,7 @@ import logger from "./logger";
 // Define env variable keys here.
 const sessionSecretKey = "SESSION_SECRET";
 const mongoUriKey = "MONGODB_URI";
+const corsOriginKey = "CORS_ORIGIN";
 
 if (fs.existsSync(".env")) {
     logger.debug("Using .env file to supply config environment variables");
@@ -18,6 +19,7 @@ const prod = ENVIRONMENT === "production"; // Anything else is treated as 'dev'
 
 export const SESSION_SECRET = process.env[sessionSecretKey];
 export const MONGODB_URI = process.env[mongoUriKey];
+export const ALLOWED_CROSS_ORIGIN = process.env[corsOriginKey];
 
 if (!SESSION_SECRET) {
     logger.error("No client secret. Set SESSION_SECRET environment variable.");

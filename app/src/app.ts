@@ -6,7 +6,7 @@ import { NextFunction, Request, Response} from "express";
 import mongoose from "mongoose";
 import { default as User, UserModel } from "./models/User";
 
-import { MONGODB_URI, SESSION_SECRET } from "./util/secrets";
+import { ALLOWED_CROSS_ORIGIN, MONGODB_URI, SESSION_SECRET } from "./util/secrets";
 // Create Express server
 
 dotenv.config({ path: ".env" });
@@ -27,6 +27,14 @@ mongoose.connect(mongoUrl, {useNewUrlParser: true }).then(
 app.set("port", process.env.PORT || 3000);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Allow Cross origin requests from desire URL
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", ALLOWED_CROSS_ORIGIN);
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 app.get("/", (req: Request, res: Response ) => {
   return res.send("Hello world!");
