@@ -25,7 +25,7 @@ export let getRolesTemplate = (req: Request, res: Response) => {
 /**
  * POST /upload/roles
  * Upload the csv file containing user roles.
-*/
+ */
 export let postRoles = (req: Request, res: Response) => {
   if (!req.files) {
     return res.status(400).send("No files were uploaded.");
@@ -46,6 +46,20 @@ export let postRoles = (req: Request, res: Response) => {
     });
   });
 
+};
+
+export let getUsersTemplate = (req: Request, res: Response) => {
+  const fields = [
+    "username",
+    "password",
+    "balance",
+    "class",
+    "name",
+    "picture",
+    "role",
+    "security_level"
+  ];
+  return sendCSV(fields, res, "users.csv");
 };
 // Helper function used for csv parsing and fiel sending.
 const sendCSV = (fields: string[], res: Response, filename: string) => {

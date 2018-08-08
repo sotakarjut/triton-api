@@ -47,6 +47,7 @@ app.get("/", (req: Request, res: Response ) => {
 // Upload routes
 app.get("/upload", uploadController.getUpload);
 app.get("/upload/roles", uploadController.getRolesTemplate);
+app.get("/upload/users", uploadController.getUsersTemplate);
 app.post("/upload/roles", uploadController.postRoles);
 
 app.post("/createtestuser", (req: Request, res: Response) => {
