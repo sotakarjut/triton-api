@@ -12,10 +12,10 @@ export let getUpload = (req: Request, res: Response) => {
 
 export let getRolesTemplate = (req: Request, res: Response) => {
   const fields = [
-      "Name",
-      "CanImpersonate",
-      "CanHack",
-      "HackerLevel"
+      "name",
+      "canImpersonate",
+      "canHack",
+      "hackerLevel"
   ];
   return sendCSV(fields, res, "roles.csv");
 };
