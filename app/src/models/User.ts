@@ -1,6 +1,8 @@
 import bcrypt from "bcrypt-nodejs";
 import mongoose from "mongoose";
 
+import { RoleModel } from "./Role";
+
 export type UserModel = mongoose.Document & {
   comparePassword: comparePasswordFunction,
   password: string,
@@ -10,7 +12,7 @@ export type UserModel = mongoose.Document & {
     class: string,
     name: string,
     picture: string
-    role: string,
+    role: RoleModel,
     security_level: number
   },
 
@@ -27,7 +29,7 @@ const userSchema = new mongoose.Schema({
     class: String,
     name: String,
     picture: String,
-    role: String,
+    role: { type: mongoose.Schema.Types.ObjectId, ref: "Role" },
     security_level: Number
   },
   tokens: Array,
