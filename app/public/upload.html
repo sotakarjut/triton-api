@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Upload</title>
+</head>
+<body>
+    <p>Use the forms below to upload users, roles and messages to the database.</p>
+    <h4>Users</h4>
+        <p>Click <a href="/upload/users">here</a> for an example template.</p>
+    <form action="/upload/users" method="POST" encType="multipart/form-data">
+        <input type="file" name="file" accept="*.csv" /><br/><br/>
+        <input type="submit" value="Upload Users" />
+    </form>
+    <h4>Messages [TODO]</h4>
+        <p>Click <a href="/upload/messages">here</a> for an example template.</p>
+    <form action="/upload/messages" method="POST" encType="multipart/form-data">
+        <input type="file" name="file" accept="*.csv" /><br/><br/>
+        <input type="submit" value="Upload Messages" />
+    </form>
+    <h4>Roles</h4>
+        <p>Click <a href="/upload/roles">here</a> for an example template.</p>
+    <form action="/upload/roles" method="POST" encType="multipart/form-data">
+        <input type="file" name="file" accept="*.csv" /><br/><br/>
+        <input type="submit" value="Upload Roles" />
+    </form>
+</body>
+</html>

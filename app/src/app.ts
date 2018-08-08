@@ -2,15 +2,18 @@ import bluebird from "bluebird";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import express from "express";
-import { NextFunction, Request, Response} from "express";
+import { NextFunction, Request, Response } from "express";
+import fileUpload from "express-fileupload";
 import mongoose from "mongoose";
 import { default as User, UserModel } from "./models/User";
 
 import { ALLOWED_CROSS_ORIGIN, MONGODB_URI, SESSION_SECRET } from "./util/secrets";
-// Create Express server
+
+import * as uploadController from "./controllers/upload";
 
 dotenv.config({ path: ".env" });
 
+// Create Express server
 const app = express();
 
 // Connect to MongoDB
@@ -27,6 +30,7 @@ mongoose.connect(mongoUrl, {useNewUrlParser: true }).then(
 app.set("port", process.env.PORT || 3000);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(fileUpload());
 
 // Allow Cross origin requests from desire URL
 
@@ -39,6 +43,8 @@ app.use((req, res, next) => {
 app.get("/", (req: Request, res: Response ) => {
   return res.send("Hello world!");
 });
+
+app.get("/upload", uploadController.getUpload);
 
 app.post("/createtestuser", (req: Request, res: Response) => {
   const user = new User({
