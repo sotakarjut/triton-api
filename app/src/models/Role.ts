@@ -13,8 +13,7 @@ const roleSchema = new mongoose.Schema({
    canHack: Boolean,
    canImpresonate: Boolean,
    hackerLevel: Number
-
 }, );
 
-const roleModel = mongoose.model("User", roleSchema);
+const roleModel = mongoose.model("Role", roleSchema);
 export default roleModel;
