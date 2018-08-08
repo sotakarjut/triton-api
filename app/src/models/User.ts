@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
     class: String,
     name: String,
     picture: String,
-    role: { type: mongoose.Schema.Types.ObjectId, ref: "Role" },
+    role: { type: String, ref: "Role" },
     security_level: Number
   },
   tokens: Array,
