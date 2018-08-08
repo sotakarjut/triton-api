@@ -5,6 +5,7 @@ import express from "express";
 import { NextFunction, Request, Response } from "express";
 import fileUpload from "express-fileupload";
 import mongoose from "mongoose";
+import { default as Role, RoleModel } from "./models/Role";
 import { default as User, UserModel } from "./models/User";
 
 import { ALLOWED_CROSS_ORIGIN, MONGODB_URI, SESSION_SECRET } from "./util/secrets";
@@ -46,6 +47,7 @@ app.get("/", (req: Request, res: Response ) => {
 // Upload routes
 app.get("/upload", uploadController.getUpload);
 app.get("/upload/roles", uploadController.getRolesTemplate);
+app.post("/upload/roles", uploadController.postRoles);
 
 app.post("/createtestuser", (req: Request, res: Response) => {
   const user = new User({
@@ -58,7 +60,7 @@ app.post("/createtestuser", (req: Request, res: Response) => {
   });
 });
 app.get("/users", (req: Request, res: Response ) => {
- User.find({}, (err, users: UserModel[]) => {
+  User.find({}, (err, users: UserModel[]) => {
     const userMap: any = {};
 
     users.forEach((user: UserModel ) => {
@@ -66,6 +68,17 @@ app.get("/users", (req: Request, res: Response ) => {
     });
 
     return res.send(userMap);
+  });
+});
+app.get("/roles", (req: Request, res: Response ) => {
+  Role.find({}, (err, roles: RoleModel[]) => {
+    const roleMap: any = {};
+    console.log(roles);
+    roles.forEach((role: RoleModel ) => {
+      roleMap[role._id] = role;
+    });
+
+    return res.send(roleMap);
   });
 });
 
