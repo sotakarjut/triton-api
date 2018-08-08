@@ -43,8 +43,9 @@ app.use((req, res, next) => {
 app.get("/", (req: Request, res: Response ) => {
   return res.send("Hello world!");
 });
-
+// Upload routes
 app.get("/upload", uploadController.getUpload);
+app.get("/upload/roles", uploadController.getRolesTemplate);
 
 app.post("/createtestuser", (req: Request, res: Response) => {
   const user = new User({
