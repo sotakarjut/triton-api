@@ -11,6 +11,7 @@ export type UserModel = mongoose.Document & {
     name: string,
     picture: string
     role: string,
+    security_level: number
   },
 
   username: string
@@ -27,6 +28,7 @@ const userSchema = new mongoose.Schema({
     name: String,
     picture: String,
     role: String,
+    security_level: Number
   },
   tokens: Array,
   username: { type: String, unique: true }
