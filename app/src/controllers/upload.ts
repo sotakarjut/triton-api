@@ -28,17 +28,22 @@ export let getRolesTemplate = (req: Request, res: Response) => {
  * Upload the csv file containing user roles.
  */
 export let postRoles = (req: Request, res: Response) => {
-  if (!req.files) {
+  if (!req.files || !req.files.file) {
     return res.status(400).send("No files were uploaded.");
   }
   const file = req.files.file as UploadedFile;
 
-  const roles: any = [];
-
-  csv.fromString(file.data.toString(), { headers: true, ignoreEmpty: true}).
+  const roles: any[] = [];
+  if (!file.data) {
+    return res.status(400).send("You uploaded an empty file!");
+  }
+  csv.fromString(file.data.toString(), { headers: true, ignoreEmpty: true, discardUnmappedColumns: true}).
   on("data", (data: any) => {
     roles.push(data);
   }).on("end", () => {
+    if (roles.length === 0) {
+      return res.status(400).send("Error: No users could be created, check your csv file.");
+    }
     Role.create(roles, (err: mongoose.Error, documents: any) => {
       if (err) {
         return res.status(400).send("Error: Role import failed");
@@ -68,33 +73,40 @@ export let getUsersTemplate = (req: Request, res: Response) => {
  * Upload the csv file containing users.
  */
 export let postUsers = (req: Request, res: Response) => {
-  if (!req.files) {
+  if (!req.files || !req.files.file) {
     return res.status(400).send("No files were uploaded.");
   }
   const file = req.files.file as UploadedFile;
 
-  const users: any = [];
+  const users: any[] = [];
+  if (file.data.toString().length === 0) {
+    return res.status(400).send("You uploaded an empty file!");
+  }
 
-  csv.fromString(file.data.toString(), { headers: true, ignoreEmpty: true}).
+  csv.fromString(file.data.toString(), { headers: true, ignoreEmpty: true, discardUnmappedColumns: true}).
   on("data", (data: any) => {
-    const user = {
-      _id: new mongoose.Types.ObjectId(),
-      password: data.password,
-      profile: {
-        balance: data.balance,
-        class: data.class,
-        name: data.name,
-        picture: data.picture,
-        role: data.role,
-        security_level: data.security_level
-      },
-      username: data.username,
-    };
-    users.push(user);
+    if ( data && validateUserData(data)) {
+      const user = {
+        _id: new mongoose.Types.ObjectId(),
+        password: data.password,
+        profile: {
+          balance: data.balance,
+          class: data.class,
+          name: data.name,
+          picture: data.picture,
+          role: data.role,
+          security_level: data.security_level
+        },
+        username: data.username,
+      };
+      users.push(user);
+  }
   }).on("end", () => {
+    if (users.length === 0) {
+      return res.status(400).send("Error: No users could be created, check your csv file.");
+    }
     User.create(users, (err: mongoose.Error, documents: any) => {
       if (err) {
-        console.log(err);
         return res.status(400).send("Error: User import failed.");
       }
       return res.send(documents.length + " users have been successfully uploaded.");
@@ -109,4 +121,8 @@ const sendCSV = (fields: string[], res: Response, filename: string) => {
   res.set("Content-Disposition", "attachment;filename=" + filename);
   res.set("Content-Type", "application/octet-stream");
   return res.send(roleCSV);
+};
+
+const validateUserData = (data: any) => {
+  return data.username && data.password;
 };
