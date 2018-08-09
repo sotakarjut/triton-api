@@ -92,6 +92,21 @@ app.get("/roles", (req: Request, res: Response ) => {
 
     return res.send(roleMap);
   });
+
+});
+app.post("/purge", (req: Request, res: Response ) => {
+  const errors: string[] = [];
+  Role.remove({}, (err: mongoose.Error) => {
+    errors.push("Removing Roles failed");
+  });
+  User.remove({}, (err: mongoose.Error) => {
+    errors.push("Removing Users failed");
+  });
+  if (errors.length !== 0) {
+    return res.status(500).send(errors.toString());
+  } else {
+    return res.status(200).send("Database purged");
+  }
 });
 
 export default app;
