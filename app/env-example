@@ -1,12 +1,12 @@
 #
 # Copy this file into a new file called ".env" and modify it to contain
-# correct values for environment variables: SESSION_SECRET, 
+# correct values for environment variables: SESSION_SECRET, JWT_SECRET 
 # MONGODB_URI and CORS_ORIGIN 
 # NOTE: .env file should not be added to git as its contents are sensitive
 #
 
 SESSION_SECRET=ashdfjhasdlkjfhalksdjhflak
-
+JWT_SECRET=uhsadhuisahduhasuidhuashiudhduias
 MONGODB_URI=mongodb://mongodb:27017/dbname
 # You can use "*" here if you want to allow requests from any origin. Otherwise use the domain of client. 
 CORS_ORIGIN=http://foo.example
