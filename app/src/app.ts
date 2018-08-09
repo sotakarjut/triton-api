@@ -41,7 +41,7 @@ app.use(passport.session());
 // API keys and Passport configuration
 import * as passportConfig from "./config/passport";
 // Allow Cross origin requests from desire URL
-
+const API_PREFIX = "/api";
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", ALLOWED_CROSS_ORIGIN);
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -52,16 +52,16 @@ app.get("/", (req: Request, res: Response ) => {
   return res.send("Hello world!");
 });
 // Login route
-app.post("/login", authController.postLogin);
+app.post(API_PREFIX + "/login", authController.postLogin);
 
 // Upload routes
 app.get("/upload", uploadController.getUpload);
-app.get("/upload/roles", uploadController.getRolesTemplate);
-app.post("/upload/roles", uploadController.postRoles);
-app.get("/upload/users", uploadController.getUsersTemplate);
-app.post("/upload/users", uploadController.postUsers);
+app.get(API_PREFIX + "/upload/roles", uploadController.getRolesTemplate);
+app.post(API_PREFIX + "/upload/roles", uploadController.postRoles);
+app.get(API_PREFIX + "/upload/users", uploadController.getUsersTemplate);
+app.post(API_PREFIX + "/upload/users", uploadController.postUsers);
 
-app.post("/createtestuser", (req: Request, res: Response) => {
+app.post(API_PREFIX + "/createtestuser", (req: Request, res: Response) => {
   const user = new User({
     password: "passoword",
     username: "John"
@@ -71,7 +71,7 @@ app.post("/createtestuser", (req: Request, res: Response) => {
     return res.send("Added user" + user );
   });
 });
-app.get("/users", (req: Request, res: Response ) => {
+app.get(API_PREFIX + "/users", (req: Request, res: Response ) => {
   User.find({}, (err, users: UserModel[]) => {
     const userMap: any = {};
 
@@ -82,7 +82,7 @@ app.get("/users", (req: Request, res: Response ) => {
     return res.send(userMap);
   });
 });
-app.get("/roles", (req: Request, res: Response ) => {
+app.get(API_PREFIX + "/roles", (req: Request, res: Response ) => {
   Role.find({}, (err, roles: RoleModel[]) => {
     const roleMap: any = {};
     console.log(roles);
@@ -94,7 +94,7 @@ app.get("/roles", (req: Request, res: Response ) => {
   });
 
 });
-app.post("/purge", (req: Request, res: Response ) => {
+app.post(API_PREFIX + "/purge", (req: Request, res: Response ) => {
   const errors: string[] = [];
   Role.remove({}, (err: mongoose.Error) => {
     errors.push("Removing Roles failed");
