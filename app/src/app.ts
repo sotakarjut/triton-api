@@ -4,12 +4,15 @@ import dotenv from "dotenv";
 import express from "express";
 import { NextFunction, Request, Response } from "express";
 import fileUpload from "express-fileupload";
+import expressValidator from "express-validator";
 import mongoose from "mongoose";
+import passport from "passport";
 import { default as Role, RoleModel } from "./models/Role";
 import { default as User, UserModel } from "./models/User";
 
 import { ALLOWED_CROSS_ORIGIN, MONGODB_URI, SESSION_SECRET } from "./util/secrets";
 
+import * as authController from "./controllers/auth";
 import * as uploadController from "./controllers/upload";
 
 dotenv.config({ path: ".env" });
@@ -32,7 +35,11 @@ app.set("port", process.env.PORT || 3000);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(fileUpload());
-
+app.use(expressValidator());
+app.use(passport.initialize());
+app.use(passport.session());
+// API keys and Passport configuration
+import * as passportConfig from "./config/passport";
 // Allow Cross origin requests from desire URL
 
 app.use((req, res, next) => {
@@ -44,6 +51,9 @@ app.use((req, res, next) => {
 app.get("/", (req: Request, res: Response ) => {
   return res.send("Hello world!");
 });
+// Login route
+app.post("/login", authController.postLogin);
+
 // Upload routes
 app.get("/upload", uploadController.getUpload);
 app.get("/upload/roles", uploadController.getRolesTemplate);
