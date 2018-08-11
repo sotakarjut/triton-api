@@ -17,6 +17,8 @@ import * as uploadController from "./controllers/upload";
 
 dotenv.config({ path: ".env" });
 
+import { default as passportConfig } from "./config/passport";
+
 // Create Express server
 const app = express();
 
@@ -39,7 +41,6 @@ app.use(expressValidator());
 app.use(passport.initialize());
 app.use(passport.session());
 // API keys and Passport configuration
-import * as passportConfig from "./config/passport";
 // Allow Cross origin requests from desire URL
 
 app.use((req, res, next) => {

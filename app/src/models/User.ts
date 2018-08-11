@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 
 import { RoleModel } from "./Role";
 
+import "../config/passport";
+
 export type UserModel = mongoose.Document & {
   comparePassword: comparePasswordFunction,
   password: string,
