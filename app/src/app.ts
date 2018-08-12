@@ -17,7 +17,7 @@ import * as uploadController from "./controllers/upload";
 
 dotenv.config({ path: ".env" });
 
-import { default as passportConfig } from "./config/passport";
+import { authenticateFunction, default as passportConfig } from "./config/passport";
 
 // Create Express server
 const app = express();
@@ -94,6 +94,10 @@ app.get(API_PREFIX + "/roles", (req: Request, res: Response ) => {
     return res.send(roleMap);
   });
 
+});
+app.get(API_PREFIX + "/testauth", authenticateFunction, (req: Request, res: Response ) => {
+
+  res.send(req.user);
 });
 app.post(API_PREFIX + "/purge", (req: Request, res: Response ) => {
   const errors: string[] = [];
