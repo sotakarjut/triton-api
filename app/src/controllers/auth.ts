@@ -33,7 +33,7 @@ export let postLogin = (req: Request, res: Response, next: any) => {
       if (loginError) {
         return res.send(loginError);
       }
-      const token = jwt.sign(user.username, JWT_SECRET);
+      const token = jwt.sign({username: user.username, id: user._id}, JWT_SECRET);
 
       return res.json({ user: {profile: user.profile, username: user.username}, token });
     });
