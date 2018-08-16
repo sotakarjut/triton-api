@@ -21,13 +21,13 @@ import { default as User, UserModel } from "../models/User";
  * @apiSuccess (200) {Object} body.user.profile Object containing user's profile.
  * @apiSuccess (200) {Number} body.user.profile.balance User's FEDCRED balance
  * @apiSuccess (200) {String} body.user.profile.class User class
- * @apiSuccess (200) {String} body.user.profile.name Users name 
+ * @apiSuccess (200) {String} body.user.profile.name Users name
  * @apiSuccess (200) {String} body.user.profile.picture URL to users profile picture
  * @apiSuccess (200) {String} body.user.profile.role Users role, defines access rights
  * @apiSuccess (200) {Number} body.user.profile.security_level Security level, how hard it is to hack this profile
  *
  * @apiSuccess (200) {String} token JWT authentication token for future requests.
- * 
+ *
  * @apiError (404) {String} Error Username not found.
  */
 export let postLogin = (req: Request, res: Response, next: any) => {
