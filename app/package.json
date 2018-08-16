@@ -1,11 +1,15 @@
 {
   "name": "triton_api",
   "version": "1.0.0",
-  "description": "Backed for Triton station's intra",
+  "description": "Backend for Triton station's intra",
   "main": "./dist/server.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/sotakarjut/typescript-backend-proto"
+  },
+   "apidoc": {
+    "title": "Triton API documentation",
+    "url" : "triton.sotakarjut.fi/api/"
   },
   "dependencies": {
     "ajv": "^6.5.2",
