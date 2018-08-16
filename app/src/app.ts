@@ -48,14 +48,17 @@ app.use((req, res, next) => {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
-
+/**
+ * @api {get}      Get Hello world!
+ * @apiGroup Testing
+ * @apiSuccess {String} response  Hello world!
+ */
 app.get("/", (req: Request, res: Response ) => {
   return res.send("Hello world!");
 });
 // Login route
 app.post(API_PREFIX + "/login", authController.postLogin);
 
-// Upload routes
 app.get("/upload", uploadController.getUpload);
 app.get(API_PREFIX + "/upload/roles", uploadController.getRolesTemplate);
 app.post(API_PREFIX + "/upload/roles", uploadController.postRoles);
@@ -72,6 +75,12 @@ app.post(API_PREFIX + "/createtestuser", (req: Request, res: Response) => {
     return res.send("Added user" + user );
   });
 });
+
+/**
+ * @api {get} users Get users
+ * @apiGroup Testing
+ * @apiSuccess {Object[]} profiles       List of user profiles.
+ */
 app.get(API_PREFIX + "/users", (req: Request, res: Response ) => {
   User.find({}, (err, users: UserModel[]) => {
     const userMap: any = {};
@@ -83,10 +92,15 @@ app.get(API_PREFIX + "/users", (req: Request, res: Response ) => {
     return res.send(userMap);
   });
 });
+
+/**
+ * @api {get} roles Get roles
+ * @apiGroup Testing
+ * @apiSuccess {Object[]} roles       List of possible user roles.
+ */
 app.get(API_PREFIX + "/roles", (req: Request, res: Response ) => {
   Role.find({}, (err, roles: RoleModel[]) => {
     const roleMap: any = {};
-    console.log(roles);
     roles.forEach((role: RoleModel ) => {
       roleMap[role._id] = role;
     });
@@ -95,10 +109,28 @@ app.get(API_PREFIX + "/roles", (req: Request, res: Response ) => {
   });
 
 });
+
+/**
+ * @api {get} testauth Test authentication
+ * @apiGroup Testing
+ * @apiHeader {json} Bearer token
+ * @apiHeaderExample {json} Authentication:
+ *     {
+ *       "Authorization": Bearer <token>
+ *     }
+ * @apiSuccess {Object} User data of the authenticated user.
+ */
 app.get(API_PREFIX + "/testauth", authenticateFunction, (req: Request, res: Response ) => {
 
   res.send(req.user);
 });
+
+/**
+ * @api {get} purge Purge the database.
+ * @apiGroup Testing
+ * @apiDescription
+ * Removes all documents from the datavase, use with caution
+ */
 app.post(API_PREFIX + "/purge", (req: Request, res: Response ) => {
   const errors: string[] = [];
   Role.remove({}, (err: mongoose.Error) => {

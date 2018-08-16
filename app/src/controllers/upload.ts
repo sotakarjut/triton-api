@@ -13,7 +13,11 @@ import { default as User, UserModel } from "../models/User";
 export let getUpload = (req: Request, res: Response) => {
   return res.sendFile(path.join(__dirname, "../../public") + "/upload.html");
 };
-
+/**
+ * @api {get} upload/roles Get template for roles
+ * @apiGroup Upload
+ * @apiSuccess (200) {file} roles.csv template file for uploading roles.
+ */
 export let getRolesTemplate = (req: Request, res: Response) => {
   const fields = [
       "name",
@@ -24,8 +28,19 @@ export let getRolesTemplate = (req: Request, res: Response) => {
   return sendCSV(fields, res, "roles.csv");
 };
 /**
- * POST /upload/roles
- * Upload the csv file containing user roles.
+ * @api {post} upload/roles Upload user roles
+ * @apiGroup Upload
+ * @apiHeader {json} CSV header:
+ *   {
+ *       Content-Type: "multipart/form-data"
+ *   }
+ *
+ * @apiDescription Upload the csv file containing user roles. The csv file must be in the same
+ * format as the template file.
+ * @apiSuccess (200) {String} Response Information about how many roles were created.
+ * @apiError (400) {String} Error User uploaded an empty file.
+ * @apiError (400) {String} Error No roles could be created.
+ * @apiError (400) {String} Error Role upload failed.
  */
 export let postRoles = (req: Request, res: Response) => {
   if (!req.files || !req.files.file) {
@@ -42,7 +57,7 @@ export let postRoles = (req: Request, res: Response) => {
     roles.push(data);
   }).on("end", () => {
     if (roles.length === 0) {
-      return res.status(400).send("Error: No users could be created, check your csv file.");
+      return res.status(400).send("Error: No roles could be created, check your csv file.");
     }
     Role.create(roles, (err: mongoose.Error, documents: any) => {
       if (err) {
@@ -53,7 +68,11 @@ export let postRoles = (req: Request, res: Response) => {
   });
 
 };
-
+/**
+ * @api {get} upload/users Upload user roles
+ * @apiGroup Upload
+ * @apiSuccess (200) {file} users.csv Template file for uploading users.
+ */
 export let getUsersTemplate = (req: Request, res: Response) => {
   const fields = [
     "username",
@@ -69,8 +88,20 @@ export let getUsersTemplate = (req: Request, res: Response) => {
 };
 
 /**
- * POST /upload/rules
- * Upload the csv file containing users.
+ * @api {post} upload/users Upload users
+ * @apiGroup Upload
+ * @apiHeader {json} CSV header:
+ *   {
+ *       Content-Type: "multipart/form-data"
+ *   }
+ *
+ * @apiDescription Upload the csv file containing user data. The csv file must be in the same
+ * format as the template file.
+ *
+ * @apiSuccess (200) {String} Response Information about how many users were created.
+ * @apiError (400) {String} Error Empty file was uploaded
+ * @apiError (400) {String} Error No users could be created
+ * @apiError (400) {String} Error User upload failed
  */
 export let postUsers = (req: Request, res: Response) => {
   if (!req.files || !req.files.file) {

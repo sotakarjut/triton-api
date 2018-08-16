@@ -9,8 +9,26 @@ import { JWT_SECRET } from "../util/secrets";
 
 import { default as User, UserModel } from "../models/User";
 /**
- * POST /login
- * Sign in using email and password.
+ * @api {post} login Log in
+ * @apiGroup Auth
+ * @apiDescription
+ * Log in using email and password.
+ * @apiParam {String} username
+ * @apiParam {String} password
+ * @apiSuccess (200) {Object[]} body Array containing user information and login token.
+ * @apiSuccess (200) {Object} body.user Object containing username and profile
+ * @apiSuccess (200) {String} body.user.username Users username
+ * @apiSuccess (200) {Object} body.user.profile Object containing user's profile.
+ * @apiSuccess (200) {Number} body.user.profile.balance User's FEDCRED balance
+ * @apiSuccess (200) {String} body.user.profile.class User class
+ * @apiSuccess (200) {String} body.user.profile.name Users name 
+ * @apiSuccess (200) {String} body.user.profile.picture URL to users profile picture
+ * @apiSuccess (200) {String} body.user.profile.role Users role, defines access rights
+ * @apiSuccess (200) {Number} body.user.profile.security_level Security level, how hard it is to hack this profile
+ *
+ * @apiSuccess (200) {String} token JWT authentication token for future requests.
+ * 
+ * @apiError (404) {String} Error Username not found.
  */
 export let postLogin = (req: Request, res: Response, next: any) => {
   req.assert("username", "Username cannot be blank").notEmpty();
@@ -23,6 +41,7 @@ export let postLogin = (req: Request, res: Response, next: any) => {
   }
 
   passport.authenticate("local", { session: false }, (authError: Error, user: UserModel, info: IVerifyOptions) => {
+    console.log(authError);
     if (authError) {
       return next(authError);
     }
