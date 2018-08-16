@@ -39,3 +39,16 @@ Then you just need to invoke the following command at the repository root
 This will build/pull the needed the docker images and start the respective container in the background. You can drop the --build option if you want to use the existing images.
 
 The server will now reply on localhost, from the port you specified in the .env file at repository root.
+
+## Generating the documentation
+
+We use apiDoc for documentation generation. You need to first install apiDock
+
+    npm install -g apidoc
+
+Then you can generate the documentation by:
+
+    cp app
+    apidoc -i src -o apidoc
+
+You can now view the API documentation with your browser.
