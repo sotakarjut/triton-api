@@ -6,7 +6,7 @@ export type MessageModel = mongoose.Document & {
   recipient: UserModel,
   replyTo: MessageModel,
   sender: UserModel,
-  topic: string
+  title: string
 };
 
 const messangeSchema = new mongoose.Schema({
@@ -15,7 +15,7 @@ const messangeSchema = new mongoose.Schema({
    recipient: { type: String, ref: "User" },
    replyTo: { type: Number, ref: "Message" },
    sender: { type: String, ref: "User" },
-   topic: String,
+   title: String,
 }, );
 
 const messangeModel = mongoose.model("Message", messangeSchema);
