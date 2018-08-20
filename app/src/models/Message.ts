@@ -10,13 +10,12 @@ export type MessageModel = mongoose.Document & {
 };
 
 const messangeSchema = new mongoose.Schema({
-   _id: { type: Number, unique: true },
    body: String,
-   recipient: { type: String, ref: "User" },
-   replyTo: { type: Number, ref: "Message" },
-   sender: { type: String, ref: "User" },
+   recipient: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+   replyTo: { type: mongoose.Schema.Types.ObjectId, ref: "Message" },
+   sender: { type: mongoose.Schema.Types.ObjectId, ref: "User",  },
    title: String,
-}, );
+}, { timestamps: true });
 
 const messangeModel = mongoose.model("Message", messangeSchema);
 export default messangeModel;
