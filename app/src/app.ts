@@ -13,6 +13,7 @@ import { default as User, UserModel } from "./models/User";
 import { ALLOWED_CROSS_ORIGIN, MONGODB_URI, SESSION_SECRET } from "./util/secrets";
 
 import * as authController from "./controllers/auth";
+import * as messageController from "./controllers/message";
 import * as uploadController from "./controllers/upload";
 
 dotenv.config({ path: ".env" });
@@ -75,6 +76,8 @@ app.post(API_PREFIX + "/createtestuser", (req: Request, res: Response) => {
     return res.send("Added user" + user );
   });
 });
+app.get(API_PREFIX + "/messages", authenticateFunction, messageController.getMessages);
+app.post(API_PREFIX + "/messages", authenticateFunction, messageController.postNewMessage);
 
 /**
  * @api {get} users Get users
