@@ -78,7 +78,8 @@ export let getUsersTemplate = (req: Request, res: Response) => {
     "username",
     "password",
     "balance",
-    "class",
+    "title",
+    "group",
     "name",
     "picture",
     "role",
@@ -122,11 +123,12 @@ export let postUsers = (req: Request, res: Response) => {
         password: data.password,
         profile: {
           balance: data.balance,
-          class: data.class,
+          group: data.group,
           name: data.name,
           picture: data.picture,
           role: data.role,
-          security_level: data.security_level
+          security_level: data.security_level,
+          title: data.class
         },
         username: data.username,
       };

@@ -11,11 +11,12 @@ export type UserModel = mongoose.Document & {
 
   profile: {
     balance: number,
-    class: string,
+    group: string,
     name: string,
     picture: string
     role: RoleModel,
-    security_level: number
+    security_level: number,
+    title: string
   },
 
   username: string
@@ -28,13 +29,13 @@ const userSchema = new mongoose.Schema({
 
   profile: {
     balance: Number,
-    class: String,
+    group: String,
     name: String,
     picture: String,
     role: { type: String, ref: "Role" },
-    security_level: Number
+    security_level: Number,
+    title: String,
   },
-  tokens: Array,
   username: { type: String, unique: true }
 
 }, { timestamps: true });
