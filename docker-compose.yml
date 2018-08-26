@@ -11,11 +11,14 @@ services:
       - mongodb
     environment:
       - "PORT=${INTERNAL_DOCKER_PORT}"
+    volumes:
+      - triton_logs:/app/log
 
   mongodb:
     image: mongo
     volumes:
-      - my_application_db:/data/db
+      - triton_db:/data/db
 
 volumes:
-  my_application_db:
+  triton_db:
+  triton_logs:
