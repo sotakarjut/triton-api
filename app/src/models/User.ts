@@ -55,6 +55,12 @@ userSchema.pre("save", function save(next: any) {
     });
   });
 });
+userSchema.pre("save", function save(next: any) {
+  const user: any = this;
+  if (!user.isModified("username")) { return next(); }
+  user.username = user.username.toLowerCase();
+  next();
+});
 
 const comparePassword: comparePasswordFunction = function(candidatePassword: string, cb: any) {
   bcrypt.compare(candidatePassword, this.password, (err: mongoose.Error, isMatch: boolean) => {
