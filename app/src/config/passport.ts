@@ -6,6 +6,7 @@ import passportJWT from "passport-jwt";
 import passportLocal from "passport-local";
 
 import { default as User, UserModel } from "../models/User";
+import logger from "../util/logger";
 import { JWT_SECRET } from "../util/secrets";
 
 const localStrategy = passportLocal.Strategy;
@@ -25,11 +26,14 @@ passport.deserializeUser((id: number, done: any) => {
  */
 passport.use(new localStrategy({ usernameField: "username", passwordField: "password" },
  (username: string, password: string, done: any) => {
+  logger.info("Trying to authenticate" + username);
   User.findOne({ username: username.toLowerCase() }, (mongoError: Error, user: any) => {
     if (mongoError) {
+      logger.error(mongoError.message);
       return done(mongoError);
     }
     if (!user) {
+      logger.error("User was not found");
       return done(undefined, false, { message: "Username ${username} not found." });
     }
     user.comparePassword(password, (err: Error, isMatch: boolean) => {
@@ -37,6 +41,7 @@ passport.use(new localStrategy({ usernameField: "username", passwordField: "pass
       if (isMatch) {
         return done(undefined, user);
       }
+      logger.error("User entered incorrect password");
       return done(undefined, false, { message: "Invalid username or password." });
     });
   });
