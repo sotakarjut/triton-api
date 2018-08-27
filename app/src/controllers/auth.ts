@@ -18,6 +18,7 @@ import { default as User, UserModel } from "../models/User";
  * @apiSuccess (200) {Object[]} body Array containing user information and login token.
  * @apiSuccess (200) {Object} body.user Object containing username and profile
  * @apiSuccess (200) {String} body.user.username Users username
+ * @apiSuccess (200) {String} body.user._id Users id
  * @apiSuccess (200) {Object} body.user.profile Object containing user's profile.
  * @apiSuccess (200) {Number} body.user.profile.balance User's FEDCRED balance
  * @apiSuccess (200) {String} body.user.profile.class User class
@@ -54,7 +55,7 @@ export let postLogin = (req: Request, res: Response, next: any) => {
       }
       const token = jwt.sign({username: user.username, id: user._id}, JWT_SECRET);
 
-      return res.json({ user: {profile: user.profile, username: user.username}, token });
+      return res.json({ user: {profile: user.profile, username: user.username, _id: user._id}, token });
     });
   })(req, res, next);
 };
