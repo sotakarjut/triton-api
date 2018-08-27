@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import path from "path";
 import { default as Role } from "../models/Role";
 import { default as User, UserModel } from "../models/User";
+import logger from "../util/logger";
 /**
  * GET /upload
  * Upload page for uploading csv files to database.
@@ -61,6 +62,7 @@ export let postRoles = (req: Request, res: Response) => {
     }
     Role.create(roles, (err: mongoose.Error, documents: any) => {
       if (err) {
+        logger.error(err.message);
         return res.status(400).send("Error: Role import failed");
       }
       return res.send(documents.length + " roles have been successfully uploaded.");
@@ -140,6 +142,7 @@ export let postUsers = (req: Request, res: Response) => {
     }
     User.create(users, (err: mongoose.Error, documents: any) => {
       if (err) {
+        logger.error(err.message);
         return res.status(400).send("Error: User import failed.");
       }
       return res.send(documents.length + " users have been successfully uploaded.");
