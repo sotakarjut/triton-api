@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import { default as Message, MessageModel } from "../models/Message";
 
 import { default as User, UserModel } from "../models/User";
+import logger from "../util/logger";
 
 const request = require("express-validator");
 /**
@@ -10,17 +11,16 @@ const request = require("express-validator");
  * @apiGroup Messages
  * @apiHeader {String} Authorization Bearer jwt-token.
  * @apiDescription
- * Posts a new message. 
+ * Posts a new message.
  * @apiParam {String} title Title of the message (required)
  * @apiParam {String} messageBody Message body
  * @apiParam {String} recipient Username of the message's recipient (required)
  * @apiParam {String} replyTo Optional parameter Id of the message this is a reply to.
- * 
+ *
  * @apiError (400) MissingData The request did not contain alla necessary data.
- * @apiError (404) NotFound Either the recipient or the replyTo-message, if provided was not found. 
+ * @apiError (404) NotFound Either the recipient or the replyTo-message, if provided was not found.
  * @apiError (500) DatabaseError The database search failed.
- * @apiSuccess (200) {Object} message The message which was saved to the database. 
- * 
+ * @apiSuccess (200) {Object} message The message which was saved to the database.
  */
 export let postNewMessage = (req: Request, res: Response) => {
   req.assert("title", "Title cant be blank").notEmpty();
@@ -70,17 +70,22 @@ export let postNewMessage = (req: Request, res: Response) => {
  * @apiHeader {String} Authorization Bearer jwt-token.
  * @apiDescription
  * Returns all messages for the authenticated user.
- * 
+ *
  * @apiError (500) DatabaseError The database search failed.
  * @apiSuccess (200) {Object[]} messages An array containing all the messages the user has received.
  */
 export let getMessages = (req: Request, res: Response) => {
-  Message.find({recipient: req.user._id}).populate("sender").exec((err: mongoose.Error, messages: MessageModel[]) => {
+  Message.find().or([{recipient: req.user._id}, {sender: req.user._id}]).populate("sender").exec((err: mongoose.Error, messages: MessageModel[]) => {
     if (err) {
-      console.log(err);
+      logger.error(err);
       return res.status(500).send("Error: Could not find messages");
     }
-    return res.status(200).send({messages:JSON.stringify(messages)});
+    logger.debug("Found " +  messages.length + " messages.");
+    const messageMap: any = {};
+    messages.forEach((message: MessageModel ) => {
+      messageMap[message._id] = message;
+    });
+    return res.status(200).send(messageMap);
   });
 
 };
