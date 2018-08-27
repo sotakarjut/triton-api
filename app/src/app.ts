@@ -7,6 +7,7 @@ import fileUpload from "express-fileupload";
 import expressValidator from "express-validator";
 import mongoose from "mongoose";
 import passport from "passport";
+import { default as Message, MessageModel } from "./models/Message";
 import { default as Role, RoleModel } from "./models/Role";
 import { default as User, UserModel } from "./models/User";
 
@@ -129,7 +130,7 @@ app.get(API_PREFIX + "/testauth", authenticateFunction, (req: Request, res: Resp
 });
 
 /**
- * @api {get} purge Purge the database.
+ * @api {post} purge Purge the database.
  * @apiGroup Testing
  * @apiDescription
  * Removes all documents from the datavase, use with caution
@@ -141,6 +142,9 @@ app.post(API_PREFIX + "/purge", (req: Request, res: Response ) => {
   });
   User.remove({}, (err: mongoose.Error) => {
     errors.push("Removing Users failed");
+  });
+  Message.remove({}, (err: mongoose.Error) => {
+    errors.push("Removing messages failed");
   });
   if (errors.length !== 0) {
     return res.status(500).send(errors.toString());
