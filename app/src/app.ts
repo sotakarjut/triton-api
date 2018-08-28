@@ -68,16 +68,6 @@ app.post(API_PREFIX + "/upload/roles", uploadController.postRoles);
 app.get(API_PREFIX + "/upload/users", uploadController.getUsersTemplate);
 app.post(API_PREFIX + "/upload/users", uploadController.postUsers);
 
-app.post(API_PREFIX + "/createtestuser", (req: Request, res: Response) => {
-  const user = new User({
-    password: "passoword",
-    username: "John"
-  });
-  user.save((err: mongoose.Error) => {
-    if (err) { return res.send(err); }
-    return res.send("Added user" + user );
-  });
-});
 app.get(API_PREFIX + "/messages", authenticateFunction, messageController.getMessages);
 app.post(API_PREFIX + "/messages", authenticateFunction, messageController.postNewMessage);
 
