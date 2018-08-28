@@ -14,6 +14,7 @@ import { default as User, UserModel } from "./models/User";
 import { ALLOWED_CROSS_ORIGIN, MONGODB_URI, SESSION_SECRET } from "./util/secrets";
 
 import * as authController from "./controllers/auth";
+import * as maintenanceController from "./controllers/maintenance";
 import * as messageController from "./controllers/message";
 import * as uploadController from "./controllers/upload";
 
@@ -129,28 +130,6 @@ app.get(API_PREFIX + "/testauth", authenticateFunction, (req: Request, res: Resp
   res.send(req.user);
 });
 
-/**
- * @api {post} purge Purge the database.
- * @apiGroup Testing
- * @apiDescription
- * Removes all documents from the datavase, use with caution
- */
-app.post(API_PREFIX + "/purge", (req: Request, res: Response ) => {
-  const errors: string[] = [];
-  Role.remove({}, (err: mongoose.Error) => {
-    errors.push("Removing Roles failed");
-  });
-  User.remove({}, (err: mongoose.Error) => {
-    errors.push("Removing Users failed");
-  });
-  Message.remove({}, (err: mongoose.Error) => {
-    errors.push("Removing messages failed");
-  });
-  if (errors.length !== 0) {
-    return res.status(500).send(errors.toString());
-  } else {
-    return res.status(200).send("Database purged");
-  }
-});
+app.post(API_PREFIX + "/purge", maintenanceController.purge);
 
 export default app;
