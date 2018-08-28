@@ -7,7 +7,7 @@ import { DatabaseError } from "../util/error";
 
 /**
  * @api {post} purge Purge the database.
- * @apiGroup Testing
+ * @apiGroup Maintenance
  * @apiDescription
  * Removes all documents from the database, use with caution
  */
