@@ -3,7 +3,11 @@ import mongoose from "mongoose";
 import { default as Message, MessageModel } from "../models/Message";
 
 import { default as User, UserModel } from "../models/User";
+
+import { DatabaseError } from "../util/error";
 import logger from "../util/logger";
+
+import { getMessagesForUser, postMessageAsUser } from "../services/message";
 
 const request = require("express-validator");
 /**
@@ -23,6 +27,7 @@ const request = require("express-validator");
  * @apiSuccess (200) {Object} message The message which was saved to the database.
  */
 export let postNewMessage = (req: Request, res: Response) => {
+
   req.assert("title", "Title cant be blank").notEmpty();
   req.assert("recipient", "Title cant be blank").notEmpty();
 
@@ -30,37 +35,10 @@ export let postNewMessage = (req: Request, res: Response) => {
     console.log(req.validationErrors());
     return res.status(400).send("Error: Missing data");
   }
-  if (req.body.replyTo) {
-    Message.findById(req.body.replyTo, (messageSearchError, originalMessage) => {
-      if (messageSearchError) {
-        return res.status(500).send("Error: Database error while finding message");
-      }
-      if (!originalMessage) {
-        return res.status(404).send("Error: Original message was not found");
-      }
-    });
-
-  }
-  User.findOne({username: req.body.recipient}, (recipientSearchErr,  foundRecipient) => {
-    if (recipientSearchErr) {
-      return res.status(500).send("Error: Database error while finding user");
-    }
-    if (!foundRecipient) {
-      return res.status(404).send("Error: Recipient was not found");
-    } else {
-      const message = new Message({
-        _id: mongoose.Types.ObjectId(),
-        body: req.body.messageBody,
-        recipient: foundRecipient._id,
-        replyTo: req.body.replyTo,
-        sender: req.user._id,
-        title: req.body.title
-      });
-      message.save((err: mongoose.Error) => {
-        if (err) { return res.send(err); }
-        return res.send("Added message" + message );
-      });
-    }
+  postMessageAsUser(req.user._id, req.body).then( (message: any) => {
+     return res.status(200).send(message);
+  }).catch( (err: DatabaseError) => {
+    return res.status(err.statusCode).send(err.message);
   });
 };
 
@@ -75,17 +53,11 @@ export let postNewMessage = (req: Request, res: Response) => {
  * @apiSuccess (200) {Object[]} messages An array containing all the messages the user has received.
  */
 export let getMessages = (req: Request, res: Response) => {
-  Message.find().or([{recipient: req.user._id}, {sender: req.user._id}]).populate("sender").exec((err: mongoose.Error, messages: MessageModel[]) => {
-    if (err) {
-      logger.error(err);
-      return res.status(500).send("Error: Could not find messages");
-    }
-    logger.debug("Found " +  messages.length + " messages.");
-    const messageMap: any = {};
-    messages.forEach((message: MessageModel ) => {
-      messageMap[message._id] = message;
-    });
-    return res.status(200).send(messageMap);
+
+  getMessagesForUser(req.user._id).then( (messages: any) => {
+     return res.status(200).send(messages);
+  }).catch( (err: DatabaseError) => {
+    return res.status(err.statusCode).send(err.message);
   });
 
 };
