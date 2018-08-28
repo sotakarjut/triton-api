@@ -12,6 +12,7 @@
       "indent": false,
       "label-position": true,
       "max-line-length": [true, 150],
+      "max-classes-per-file": [true, 2],
       "no-arg": true,
       "no-bitwise": true,
       "no-console": false,
