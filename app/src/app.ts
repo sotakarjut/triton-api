@@ -11,6 +11,7 @@ import passport from "passport";
 import { ALLOWED_CROSS_ORIGIN, MONGODB_URI, SESSION_SECRET } from "./util/secrets";
 
 import * as authController from "./controllers/auth";
+import * as hackingController from "./controllers/hack";
 import * as maintenanceController from "./controllers/maintenance";
 import * as messageController from "./controllers/message";
 import * as testingController from "./controllers/testing";
@@ -69,6 +70,9 @@ app.post(API_PREFIX + "/messages", authenticateFunction, messageController.postN
 app.get(API_PREFIX + "/users", testingController.getUsers);
 app.get(API_PREFIX + "/roles", testingController.getRoles);
 app.get(API_PREFIX + "/testauth", testingController.getTestauth);
+
+// Hacking routes
+app.post(API_PREFIX + "/hack/intiate", authenticateFunction, hackingController.postInitiateHacking);
 
 // Maintenance routes
 app.post(API_PREFIX + "/purge", maintenanceController.purge);
