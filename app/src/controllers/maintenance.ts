@@ -1,7 +1,7 @@
-import { Promise} from "bluebird";
+import { Promise } from "bluebird";
 import { Request, Response } from "express";
 
-import { purgeDb} from "../services/maintenance";
+import { purgeDb } from "../services/maintenance";
 
 import { DatabaseError } from "../util/error";
 

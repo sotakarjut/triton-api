@@ -1,4 +1,4 @@
-import { Promise} from "bluebird";
+import { Promise } from "bluebird";
 import mongoose from "mongoose";
 
 import { default as Message, MessageModel } from "../models/Message";
