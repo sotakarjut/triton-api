@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import { default as Role, RoleModel } from "../models/Role";
 import { default as User, UserModel } from "../models/User";
 
+import { getMessagesForUser, postMessageAsUser } from "../services/message";
 import { APIError, DatabaseError } from "../util/error";
 import logger from "../util/logger";
 
