@@ -1,4 +1,4 @@
-import {NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import _ from "lodash";
 import { Error } from "mongoose";
 import passport from "passport";
@@ -53,6 +53,8 @@ passport.use(new passportJWT.Strategy({
     }, (jwtPayload: any , done: any) => {
 
         return User.findById(jwtPayload.id)
+            .populate("profile.role")
+            .exec()
             .then((user: UserModel) => {
                 return done(null, user);
             })
