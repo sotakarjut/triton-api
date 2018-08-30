@@ -17,6 +17,7 @@ import * as messageController from "./controllers/message";
 import * as testingController from "./controllers/testing";
 import * as uploadController from "./controllers/upload";
 
+import { isHacker } from "./middleware/authorization";
 dotenv.config({ path: ".env" });
 
 import { authenticateFunction, default as passportConfig } from "./config/passport";
@@ -72,7 +73,7 @@ app.get(API_PREFIX + "/roles", testingController.getRoles);
 app.get(API_PREFIX + "/testauth", testingController.getTestauth);
 
 // Hacking routes
-app.post(API_PREFIX + "/hack/intiate", authenticateFunction, hackingController.postInitiateHacking);
+app.post(API_PREFIX + "/hack/intiate", authenticateFunction, isHacker, hackingController.postInitiateHacking);
 
 // Maintenance routes
 app.post(API_PREFIX + "/purge", maintenanceController.purge);

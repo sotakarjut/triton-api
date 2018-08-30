@@ -13,7 +13,7 @@ import { APIError, DatabaseError  } from "../util/error";
  *
  * Starts the hacking, notifies the administrators about hacking location (TODO) and
  * retuns the amount of time required for hacking target profile
- * @apiParam {String} target Username of the hacking target
+ * @apiParam {String} targetId Id of the hacking target
  * @apiParam {String} terminalId Id of the terminal where the hacking is taking place.
  *
  * @apiError (400) MissingData The request did not contain alla necessary data.
@@ -25,7 +25,7 @@ import { APIError, DatabaseError  } from "../util/error";
  */
 export let postInitiateHacking = (req: Request, res: Response) => {
 
-   getHackingDuration(req.user._id, req.body.target).then((duration: number) => {
+   getHackingDuration(req.user, req.body.targetId).then((duration: number) => {
      return res.status(200).send({hackingDuration: duration});
   }).catch((err: APIError) => {
     return res.status(err.statusCode).send(err.message);
