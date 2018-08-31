@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 
 export type RoleModel = mongoose.Document & {
   _id: number,
+  canBeHacked: boolean,
   canHack: boolean,
   canImpersonate: boolean,
   hackerLevel: number,
@@ -10,6 +11,7 @@ export type RoleModel = mongoose.Document & {
 };
 
 const roleSchema = new mongoose.Schema({
+   canBeHacked: Boolean,
    canHack: Boolean,
    canImpersonate: Boolean,
    hackerLevel: Number,
@@ -23,5 +25,6 @@ export const roleImportFields = [
       "name",
       "canImpersonate",
       "canHack",
+      "canBeHacked",
       "hackerLevel"
   ];
