@@ -72,3 +72,15 @@ userSchema.methods.comparePassword = comparePassword;
 
 const userModel = mongoose.model("User", userSchema);
 export default userModel;
+
+export const userImportFields = [
+    "username",
+    "password",
+    "balance",
+    "title",
+    "group",
+    "name",
+    "picture",
+    "role",
+    "security_level"
+  ];

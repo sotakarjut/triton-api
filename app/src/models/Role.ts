@@ -18,3 +18,10 @@ const roleSchema = new mongoose.Schema({
 
 const roleModel = mongoose.model("Role", roleSchema);
 export default roleModel;
+
+export const roleImportFields = [
+      "name",
+      "canImpersonate",
+      "canHack",
+      "hackerLevel"
+  ];

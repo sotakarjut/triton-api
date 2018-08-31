@@ -4,8 +4,8 @@ import csv = require("fast-csv");
 import json2csv from "json2csv";
 import mongoose from "mongoose";
 import path from "path";
-import { default as Role, RoleModel } from "../models/Role";
-import { default as User, UserModel } from "../models/User";
+import { default as Role, roleImportFields, RoleModel } from "../models/Role";
+import { default as User, userImportFields, UserModel } from "../models/User";
 import logger from "../util/logger";
 
 import { APIError, DatabaseError  } from "../util/error";
@@ -22,13 +22,7 @@ export let getUpload = (req: Request, res: Response) => {
  * @apiSuccess (200) {file} roles.csv template file for uploading roles.
  */
 export let getRolesTemplate = (req: Request, res: Response) => {
-  const fields = [
-      "name",
-      "canImpersonate",
-      "canHack",
-      "hackerLevel"
-  ];
-  return sendCSV(fields, res, "roles.csv");
+  return sendCSV(roleImportFields, res, "roles.csv");
 };
 /**
  * @api {post} upload/roles Upload user roles
@@ -78,18 +72,7 @@ export let postRoles = (req: Request, res: Response) => {
  * @apiSuccess (200) {file} users.csv Template file for uploading users.
  */
 export let getUsersTemplate = (req: Request, res: Response) => {
-  const fields = [
-    "username",
-    "password",
-    "balance",
-    "title",
-    "group",
-    "name",
-    "picture",
-    "role",
-    "security_level"
-  ];
-  return sendCSV(fields, res, "users.csv");
+  return sendCSV(userImportFields, res, "users.csv");
 };
 
 /**
