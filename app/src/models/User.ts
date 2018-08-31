@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
     group: String,
     name: String,
     picture: String,
-    role: { type: String, ref: "Role" },
+    role: { type: mongoose.Schema.Types.ObjectId, ref: "Role" },
     security_level: Number,
     title: String,
   },
