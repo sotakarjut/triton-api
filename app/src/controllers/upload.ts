@@ -4,9 +4,11 @@ import csv = require("fast-csv");
 import json2csv from "json2csv";
 import mongoose from "mongoose";
 import path from "path";
-import { default as Role } from "../models/Role";
+import { default as Role, RoleModel } from "../models/Role";
 import { default as User, UserModel } from "../models/User";
 import logger from "../util/logger";
+
+import { APIError, DatabaseError  } from "../util/error";
 /**
  * GET /upload
  * Upload page for uploading csv files to database.
@@ -119,33 +121,52 @@ export let postUsers = (req: Request, res: Response) => {
 
   csv.fromString(file.data.toString(), { headers: true, ignoreEmpty: true, discardUnmappedColumns: true}).
   on("data", (data: any) => {
-    if ( data && validateUserData(data)) {
-      const user = {
-        _id: new mongoose.Types.ObjectId(),
-        password: data.password,
-        profile: {
-          balance: data.balance,
-          group: data.group,
-          name: data.name,
-          picture: data.picture,
-          role: data.role,
-          security_level: data.security_level,
-          title: data.class
-        },
-        username: data.username,
-      };
-      users.push(user);
-  }
+    const newUser = new Promise((resolve, reject) => {
+      Role.findOne({name: data.role}, (roleSearchError: mongoose.Error, foundRole: RoleModel) => {
+        if (roleSearchError) {
+          logger.error(roleSearchError);
+          return reject(new DatabaseError(500, "Internal server error"));
+        } else if (!foundRole) {
+          logger.error("Error: Role not found");
+          return reject(new DatabaseError(404, "Error: Role not found"));
+        } else if ( !data && !validateUserData(data)) {
+          logger.error("Error: Malformed user data");
+          return reject(new APIError(400, "Error: Malformed user data"));
+        } else  {
+          const user = {
+            _id: new mongoose.Types.ObjectId(),
+            password: data.password,
+            profile: {
+              balance: data.balance,
+              group: data.group,
+              name: data.name,
+              picture: data.picture,
+              role: foundRole._id,
+              security_level: data.security_level,
+              title: data.class
+            },
+            username: data.username,
+          };
+          return resolve(user);
+        }
+      });
+    });
+    users.push(newUser);
   }).on("end", () => {
     if (users.length === 0) {
       return res.status(400).send("Error: No users could be created, check your csv file.");
     }
-    User.create(users, (err: mongoose.Error, documents: any) => {
-      if (err) {
-        logger.error(err.message);
-        return res.status(400).send("Error: User import failed.");
-      }
-      return res.send(documents.length + " users have been successfully uploaded.");
+    Promise.all(users)
+    .then((resolvedUsers: any[]) => {
+      User.create(resolvedUsers, (err: mongoose.Error, documents: any) => {
+        if (err) {
+          logger.error(err.message);
+          return res.status(500).send("Error: User import failed.");
+        }
+        return res.send(documents.length + " users have been successfully uploaded.");
+      });
+    }).catch((err: APIError) => {
+        return res.status(err.statusCode).send(err.message);
     });
   });
 
