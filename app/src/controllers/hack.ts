@@ -66,7 +66,7 @@ export let postNewMessage = (req: Request, res: Response) => {
 };
 
 /**
- * @api {get} /hack/messages Get all messages for target user
+ * @api {get} /hack/messages/:targetId Get all messages for target user
  * @apiGroup Hacking
  * @apiHeader {String} Authorization Bearer jwt-token.
  * @apiDescription
@@ -78,7 +78,7 @@ export let postNewMessage = (req: Request, res: Response) => {
  */
 export let getMessages = (req: Request, res: Response) => {
 
-  getMessagesForUser(req.body.targetId).then( (messages: any) => {
+  getMessagesForUser(req.params.targetId).then( (messages: any) => {
      return res.status(200).send(messages);
   }).catch( (err: DatabaseError) => {
     return res.status(err.statusCode).send(err.message);
