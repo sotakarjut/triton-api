@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import mongoose from "mongoose";
-import { default as Message, MessageModel } from "../models/Message";
 
+import { default as Message, MessageModel } from "../models/Message";
 import { default as User, UserModel } from "../models/User";
 
 import { DatabaseError } from "../util/error";
@@ -18,7 +18,7 @@ const request = require("express-validator");
  * Posts a new message.
  * @apiParam {String} title Title of the message (required)
  * @apiParam {String} messageBody Message body
- * @apiParam {String} recipient Username of the message's recipient (required)
+ * @apiParam {String} recipientId Id of the message's recipient. Can be user or mailinglist (required)
  * @apiParam {String} replyTo Optional parameter Id of the message this is a reply to.
  *
  * @apiError (400) MissingData The request did not contain alla necessary data.
@@ -29,7 +29,7 @@ const request = require("express-validator");
 export let postNewMessage = (req: Request, res: Response) => {
 
   req.assert("title", "Title cant be blank").notEmpty();
-  req.assert("recipient", "Title cant be blank").notEmpty();
+  req.assert("recipientId", "Title cant be blank").notEmpty();
 
   if (req.validationErrors()) {
     console.log(req.validationErrors());
