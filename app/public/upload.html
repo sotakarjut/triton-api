@@ -23,5 +23,12 @@
         <input type="file" name="file" accept="*.csv" /><br/><br/>
         <input type="submit" value="Upload Roles" />
     </form>
+      <h4>Mailing list</h4>
+        <p>Click <a href="api/upload/mailinglist">here</a> for an example template.</p>
+    <form action="api/upload/mailinglist" method="POST" encType="multipart/form-data">
+        <input type="file" name="file" accept="*.csv" /><br/><br/>
+        <input type="text" name="name"/>
+        <input type="submit" value="Create mailing list" />
+    </form>
 </body>
 </html>

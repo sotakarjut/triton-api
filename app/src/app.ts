@@ -62,6 +62,8 @@ app.get(API_PREFIX + "/upload/roles", uploadController.getRolesTemplate);
 app.post(API_PREFIX + "/upload/roles", uploadController.postRoles);
 app.get(API_PREFIX + "/upload/users", uploadController.getUsersTemplate);
 app.post(API_PREFIX + "/upload/users", uploadController.postUsers);
+app.get(API_PREFIX + "/upload/mailinglist", uploadController.getMailingListTemplate);
+app.post(API_PREFIX + "/upload/mailinglist", uploadController.postMailingList);
 
 // Message routes
 app.get(API_PREFIX + "/messages", authenticateFunction, messageController.getMessages);

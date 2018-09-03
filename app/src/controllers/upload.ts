@@ -4,6 +4,7 @@ import csv = require("fast-csv");
 import json2csv from "json2csv";
 import mongoose from "mongoose";
 import path from "path";
+import { default as MailingList, mailingListImportFields, MailingListModel } from "../models/MailingList";
 import { default as Role, roleImportFields, RoleModel } from "../models/Role";
 import { default as User, userImportFields, UserModel } from "../models/User";
 import logger from "../util/logger";
@@ -111,7 +112,7 @@ export let postUsers = (req: Request, res: Response) => {
           return reject(new DatabaseError(500, "Internal server error"));
         } else if (!foundRole) {
           logger.error("Error: Role not found");
-          return reject(new DatabaseError(404, "Error: Role not found"));
+          return reject(new DatabaseError(404, "Error: Role " + data.role + " not found"));
         } else if ( !data && !validateUserData(data)) {
           logger.error("Error: Malformed user data");
           return reject(new APIError(400, "Error: Malformed user data"));
@@ -155,6 +156,66 @@ export let postUsers = (req: Request, res: Response) => {
 
 };
 
+/**
+ * @api {post} upload/mailinglist Upload a mailing list
+ * @apiGroup Upload
+ * @apiHeader {json} CSV header:
+ *   {
+ *       Content-Type: "multipart/form-data"
+ *   }
+ *
+ * @apiDescription Upload the csv file containing data for a single mailinglist. The csv file must be in the same
+ * format as the template file.
+ *
+ * @apiParam {String} name Name of the new mailing list
+ * @apiSuccess (200) {String} Response Information about how many users were created.
+ * @apiError (400) {String} Error Empty file was uploaded
+ * @apiError (400) {String} Error No users could be created
+ * @apiError (400) {String} Error User upload failed
+ */
+export let postMailingList = (req: Request, res: Response) => {
+  if (!req.files || !req.files.file) {
+    return res.status(400).send("No files were uploaded.");
+  }
+  const file = req.files.file as UploadedFile;
+
+  if (!file.data) {
+    return res.status(400).send("You uploaded an empty file!");
+  }
+  logger.debug("req.body.name is: " + req.body.name);
+  const members: any[] = [];
+  csv.fromString(file.data.toString(), { headers: true, ignoreEmpty: true, discardUnmappedColumns: true}).
+  on("data", (data: any) => {
+    logger.debug(data.username.toLowerCase());
+    members.push(data.username.toLowerCase());
+  }).on("end", () => {
+    if (members.length === 0) {
+      return res.status(400).send("Error: No members could be added, check your csv file.");
+    }
+    parseMailingListmembers(members).then((memberIds: any) => {
+      MailingList.create({name: req.body.name, members: memberIds}, (err: mongoose.Error, documents: any) => {
+        if (err) {
+          logger.error(err.message);
+          return res.status(400).send("Error: MailingList import failed");
+        }
+        return res.send("New mailinglist " + req.body.name + " have been successfully uploaded.");
+      });
+    }).catch((err: APIError) => {
+      return res.status(err.statusCode).send(err.message);
+    });
+  });
+
+};
+
+/**
+ * @api {get} upload/mailinglists Upload user roles
+ * @apiGroup Upload
+ * @apiSuccess (200) {file} users.csv Template file for uploading users.
+ */
+export let getMailingListTemplate = (req: Request, res: Response) => {
+  return sendCSV(mailingListImportFields, res, "mailinglist.csv");
+};
+
 // Helper function used for csv parsing and fiel sending.
 const sendCSV = (fields: string[], res: Response, filename: string) => {
   const roleCSV = json2csv.parse( {data: ""}, { fields } );
@@ -165,4 +226,20 @@ const sendCSV = (fields: string[], res: Response, filename: string) => {
 
 const validateUserData = (data: any) => {
   return data.username && data.password;
+};
+
+const parseMailingListmembers = (members: string[]) => {
+  return new Promise((resolve, reject) => {
+    User.find({username: {$in: members}})
+    .select("_id")
+    .exec((userSearchError: mongoose.Error, users: mongoose.Schema.Types.ObjectId[]) => {
+      if (userSearchError) {
+        return reject(new DatabaseError(500, "Error: Internal error"));
+      } else if (members.length !== users.length) {
+        return reject(new DatabaseError(404, "Error: All users could not be found"));
+      } else {
+        return resolve(users);
+      }
+    });
+  });
 };
