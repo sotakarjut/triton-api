@@ -65,6 +65,18 @@ export let postMessageAsUser = (senderId: mongoose.Schema.Types.ObjectId, messag
   });
 };
 
+export let getMailingLists = () => {
+  return new Promise((resolve, reject) => {
+    MailingList.find({}, (err, lists: MailingListModel[]) => {
+    const userMap: any = {};
+    lists.forEach((list: MailingListModel ) => {
+      userMap[list._id] = list;
+    });
+    return resolve(userMap);
+  });
+  });
+};
+
 const recipientIsMailingList = (recipientId: mongoose.Schema.Types.ObjectId) => {
   return new Promise((resolve, reject) => {
     MailingList.findById(recipientId , (err: mongoose.Error, mailingList: MailingListModel) => {

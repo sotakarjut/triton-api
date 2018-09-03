@@ -66,6 +66,7 @@ app.get(API_PREFIX + "/upload/mailinglist", uploadController.getMailingListTempl
 app.post(API_PREFIX + "/upload/mailinglist", uploadController.postMailingList);
 
 // Message routes
+app.get(API_PREFIX + "/mailinglists", messageController.getAllMailingLists);
 app.get(API_PREFIX + "/messages", authenticateFunction, messageController.getMessages);
 app.post(API_PREFIX + "/messages", authenticateFunction, messageController.postNewMessage);
 

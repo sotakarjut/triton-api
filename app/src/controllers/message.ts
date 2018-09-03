@@ -7,7 +7,7 @@ import { default as User, UserModel } from "../models/User";
 import { DatabaseError } from "../util/error";
 import logger from "../util/logger";
 
-import { getMessagesForUser, postMessageAsUser } from "../services/message";
+import { getMailingLists, getMessagesForUser, postMessageAsUser } from "../services/message";
 
 const request = require("express-validator");
 /**
@@ -56,6 +56,26 @@ export let getMessages = (req: Request, res: Response) => {
 
   getMessagesForUser(req.user._id).then( (messages: any) => {
      return res.status(200).send(messages);
+  }).catch( (err: DatabaseError) => {
+    return res.status(err.statusCode).send(err.message);
+  });
+
+};
+
+/**
+ * @api {get} mailinglists Get all messages
+ * @apiGroup Messages
+ * @apiHeader {String} Authorization Bearer jwt-token.
+ * @apiDescription
+ * Returns all mailing lists
+ *
+ * @apiError (500) DatabaseError The database search failed.
+ * @apiSuccess (200) {Object[]} mailingLists A map containing all mailinglists.
+ */
+export let getAllMailingLists = (req: Request, res: Response) => {
+
+  getMailingLists().then( (mailingLists: any) => {
+     return res.status(200).send(mailingLists);
   }).catch( (err: DatabaseError) => {
     return res.status(err.statusCode).send(err.message);
   });
