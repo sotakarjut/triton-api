@@ -78,6 +78,9 @@ app.post(API_PREFIX + "/hack/messages", authenticateFunction, isHacker, hackingC
 app.get(API_PREFIX + "/hack/messages/:targetId", authenticateFunction, isHacker, hackingController.getMessages);
 
 // Maintenance routes
-app.post(API_PREFIX + "/purge", maintenanceController.purge);
+app.post(API_PREFIX + "/purge/all", maintenanceController.postPurgeAll);
+app.post(API_PREFIX + "/purge/messages", maintenanceController.postPurgeMessages);
+app.post(API_PREFIX + "/purge/roles", maintenanceController.postPurgeRoles);
+app.post(API_PREFIX + "/purge/users", maintenanceController.postPurgeUsers);
 
 export default app;

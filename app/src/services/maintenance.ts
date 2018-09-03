@@ -8,22 +8,49 @@ import { default as User, UserModel } from "../models/User";
 import { DatabaseError } from "../util/error";
 import logger from "../util/logger";
 
-export let purgeDb = () => {
+export let purgeAll = () => {
   return new Promise ((resolve, reject) => {
-    const errors: string[] = [];
-    Role.remove({}, (err: mongoose.Error) => {
-      errors.push("Removing Roles failed");
-    });
-    User.remove({}, (err: mongoose.Error) => {
-      errors.push("Removing Users failed");
-    });
-    Message.remove({}, (err: mongoose.Error) => {
-      errors.push("Removing messages failed");
-    });
-    if (errors.length !== 0) {
-      return reject(new DatabaseError(500, errors.toString()));
-    } else {
+    Promise.all([purgeUsers(), purgeRoles(), purgeMessages()])
+    .then( () => {
       return resolve("Database purged");
+    }).catch((err: DatabaseError) => {
+      return reject(err);
+    });
+  });
+};
+
+export let purgeUsers = () => {
+  return new Promise ((resolve, reject) => {
+  User.remove({}, (err: mongoose.Error) => {
+    if (err) {
+      return reject(new DatabaseError(500, err.message));
+    } else {
+      return resolve("Users purged");
     }
+   });
+  });
+};
+
+export let purgeRoles = () => {
+  return new Promise ((resolve, reject) => {
+  Role.remove({}, (err: mongoose.Error) => {
+    if (err) {
+      return reject(new DatabaseError(500, err.message));
+    } else {
+      return resolve("Roles purged");
+    }
+   });
+  });
+};
+
+export let purgeMessages = () => {
+  return new Promise ((resolve, reject) => {
+  Message.remove({}, (err: mongoose.Error) => {
+    if (err) {
+      return reject(new DatabaseError(500, err.message));
+    } else {
+      return resolve("Messages purged");
+    }
+   });
   });
 };
