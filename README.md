@@ -57,5 +57,5 @@ You can now view the API documentation with your browser.
 
 Merge your stuff with master repository first and run your tests.
 
-Once you're fairly sure that the code is production ready, you only need to merge master into production.
+Once you're fairly sure that the code is production ready, you only need to merge the master into the production branch.
 This will trigger a webhook event from GitHub to the production server that will run an auto-deployer.
