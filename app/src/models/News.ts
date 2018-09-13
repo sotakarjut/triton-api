@@ -15,3 +15,9 @@ const newsSchema = new mongoose.Schema({
 
 const newsModel = mongoose.model("News", newsSchema);
 export default newsModel;
+
+export const newsImportFields = [
+      "author",
+      "title",
+      "body"
+  ];
