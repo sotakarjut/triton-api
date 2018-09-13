@@ -9,7 +9,7 @@ export type MessageModel = mongoose.Document & {
   title: string
 };
 
-const messangeSchema = new mongoose.Schema({
+const messageSchema = new mongoose.Schema({
    body: String,
    recipient: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
    replyTo: { type: mongoose.Schema.Types.ObjectId, ref: "Message" },
@@ -17,5 +17,5 @@ const messangeSchema = new mongoose.Schema({
    title: String,
 }, { timestamps: true });
 
-const messangeModel = mongoose.model("Message", messangeSchema);
-export default messangeModel;
+const messageModel = mongoose.model("Message", messageSchema);
+export default messageModel;
