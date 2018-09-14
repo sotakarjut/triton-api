@@ -10,8 +10,9 @@ WORKDIR /app
 
 COPY ./app/ /app/
 
-RUN npm install
-RUN npm run build
+RUN npm install && \
+    npm run build && \
+    chown -R nodeapp:nodeapp /app
 
 EXPOSE $PORT
 USER nodeapp
