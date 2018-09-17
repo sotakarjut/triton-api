@@ -5,8 +5,11 @@ import json2csv from "json2csv";
 import mongoose from "mongoose";
 import path from "path";
 import { default as MailingList, mailingListImportFields, MailingListModel } from "../models/MailingList";
+import { default as News, newsImportFields, NewsModel } from "../models/News";
 import { default as Role, roleImportFields, RoleModel } from "../models/Role";
 import { default as User, userImportFields, UserModel } from "../models/User";
+
+import { readNewsCsv } from "../services/upload";
 import logger from "../util/logger";
 
 import { APIError, DatabaseError  } from "../util/error";
@@ -208,12 +211,54 @@ export let postMailingList = (req: Request, res: Response) => {
 };
 
 /**
- * @api {get} upload/mailinglists Upload user roles
+ * @api {get} upload/mailinglists Get template for uploading a single mailinglist
  * @apiGroup Upload
- * @apiSuccess (200) {file} users.csv Template file for uploading users.
+ * @apiSuccess (200) {file} mailinglist.csv Template file for uploading users.
  */
 export let getMailingListTemplate = (req: Request, res: Response) => {
   return sendCSV(mailingListImportFields, res, "mailinglist.csv");
+};
+
+/**
+ * @api {post} upload/news Upload news
+ * @apiGroup Upload
+ * @apiHeader {json} CSV header:
+ *   {
+ *       Content-Type: "multipart/form-data"
+ *   }
+ *
+ * @apiDescription Upload the csv file containing data for news. The csv file must be in the same
+ * format as the template file.
+ *
+ * @apiParam {String} name Name of the new mailing list
+ * @apiSuccess (200) {String} Response Information about how many users were created.
+ * @apiError (400) {String} Error Empty file was uploaded
+ * @apiError (400) {String} Error No users could be created
+ * @apiError (400) {String} Error User upload failed
+ */
+export let postUploadNews = (req: Request, res: Response) => {
+  if (!req.files || !req.files.file) {
+    return res.status(400).send("No files were uploaded.");
+  }
+  const file = req.files.file as UploadedFile;
+
+  if (!file.data) {
+    return res.status(400).send("You uploaded an empty file!");
+  }
+  readNewsCsv(file.data.toString()).then(() => {
+    return res.status(200).send("News succesfully uploaded");
+  }).catch((err: APIError) => {
+    return res.status(err.statusCode).send(err.message);
+  });
+
+};
+/**
+ * @api {get} upload/news Get template for uploading news
+ * @apiGroup Upload
+ * @apiSuccess (200) {file} users.csv Template file for uploading users.
+ */
+export let getNewsTemplate = (req: Request, res: Response) => {
+  return sendCSV(newsImportFields, res, "news.csv");
 };
 
 // Helper function used for csv parsing and fiel sending.

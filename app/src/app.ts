@@ -64,6 +64,8 @@ app.get(API_PREFIX + "/upload/users", uploadController.getUsersTemplate);
 app.post(API_PREFIX + "/upload/users", uploadController.postUsers);
 app.get(API_PREFIX + "/upload/mailinglist", uploadController.getMailingListTemplate);
 app.post(API_PREFIX + "/upload/mailinglist", uploadController.postMailingList);
+app.get(API_PREFIX + "/upload/news", uploadController.getNewsTemplate);
+app.post(API_PREFIX + "/upload/news", uploadController.postUploadNews);
 
 // Message routes
 app.get(API_PREFIX + "/mailinglists", messageController.getAllMailingLists);
