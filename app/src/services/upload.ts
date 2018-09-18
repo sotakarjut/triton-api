@@ -18,32 +18,41 @@ export let readNewsCsv = (fileData: string) => {
       if (news.length === 0) {
         return reject(new APIError(400, "Error: No news could be created, check your csv file."));
       }
-      news.forEach((piece: any) => {
-        logger.info(JSON.stringify(piece));
-        User.findOne({name: piece.name}, (userSearchError: mongoose.Error, user: UserModel) => {
-          if (userSearchError) {
-            return reject(new DatabaseError(500, "Error: User search failed"));
-          } else if (!user) {
+      const newsWithIds = news.map((piece: any) => {
+        return addUserIdToNews(piece);
+      });
+      Promise.all(newsWithIds).then((newsPromises: any) => {
+
+        News.create(newsPromises, (newsAddError: mongoose.Error, createdNews: NewsModel[]) => {
+          if (newsAddError) {
+            return reject(new DatabaseError(500, "Error: News adding failed"));
+          } else if (!news) {
             return reject(new DatabaseError(404, "Error: Author user not found."));
           } else {
-            const newPiece = {
-              author: user._id,
-              title: piece.title,
-              body: piece.body
-            };
-
-            News.create(newPiece, (err: mongoose.Error, news: NewsModel) => {
-              if (userSearchError) {
-                return reject(new DatabaseError(500, "Error: News adding failed"));
-              } else if (!user) {
-                return reject(new DatabaseError(404, "Error: Author user not found."));
-              }
-            });
+            resolve(createdNews.length);
           }
-
         });
       });
-      resolve();
+    });
+  });
+};
+
+const addUserIdToNews = (piece: any) => {
+  return new Promise ( (resolve, reject) => {
+    logger.info(JSON.stringify(piece));
+    User.findOne({name: piece.name}, (userSearchError: mongoose.Error, user: UserModel) => {
+      if (userSearchError) {
+        return reject(new DatabaseError(500, "Error: User search failed"));
+      } else if (!user) {
+        return reject(new DatabaseError(404, "Error: Author user not found."));
+      } else {
+        const newPiece = {
+          author: user._id,
+          body: piece.body,
+          title: piece.title
+        };
+        resolve(newPiece);
+      }
     });
   });
 };
