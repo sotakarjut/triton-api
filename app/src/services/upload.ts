@@ -32,6 +32,8 @@ export let readNewsCsv = (fileData: string) => {
             resolve(createdNews.length);
           }
         });
+      }).catch((error: DatabaseError) => {
+        reject(error);
       });
     });
   });
