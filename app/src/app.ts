@@ -14,6 +14,7 @@ import * as authController from "./controllers/auth";
 import * as hackingController from "./controllers/hack";
 import * as maintenanceController from "./controllers/maintenance";
 import * as messageController from "./controllers/message";
+import * as newsController from "./controllers/news";
 import * as testingController from "./controllers/testing";
 import * as uploadController from "./controllers/upload";
 
@@ -71,6 +72,9 @@ app.post(API_PREFIX + "/upload/news", uploadController.postUploadNews);
 app.get(API_PREFIX + "/mailinglists", messageController.getAllMailingLists);
 app.get(API_PREFIX + "/messages", authenticateFunction, messageController.getMessages);
 app.post(API_PREFIX + "/messages", authenticateFunction, messageController.postNewMessage);
+
+// News routes
+app.get(API_PREFIX + "/news",  newsController.getAllNews);
 
 // Testing routes
 app.get(API_PREFIX + "/users", testingController.getUsers);
