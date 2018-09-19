@@ -5,6 +5,7 @@ import json2csv from "json2csv";
 import mongoose from "mongoose";
 import path from "path";
 import { default as MailingList, mailingListImportFields, MailingListModel } from "../models/MailingList";
+import { messageImportFields } from "../models/Message";
 import { default as News, newsImportFields, NewsModel } from "../models/News";
 import { default as Role, roleImportFields, RoleModel } from "../models/Role";
 import { default as User, userImportFields, UserModel } from "../models/User";
@@ -259,6 +260,15 @@ export let postUploadNews = (req: Request, res: Response) => {
  */
 export let getNewsTemplate = (req: Request, res: Response) => {
   return sendCSV(newsImportFields, res, "news.csv");
+};
+
+/**
+ * @api {get} upload/messages Get template for uploading messages
+ * @apiGroup Upload
+ * @apiSuccess (200) {file} messages.csv Template file for uploading users.
+ */
+export let getMessagesTemplate = (req: Request, res: Response) => {
+  return sendCSV(messageImportFields, res, "message.csv");
 };
 
 // Helper function used for csv parsing and fiel sending.
