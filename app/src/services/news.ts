@@ -24,3 +24,22 @@ export let getNews = () => {
     });
   });
 };
+
+export let createNews = (userId: mongoose.Schema.Types.ObjectId, data: any) => {
+  return new Promise ((resolve, reject) => {
+    const newsPiece = new News ({
+        author: userId,
+        body: data.newsBody,
+        title: data.title
+    });
+    newsPiece.save( (err: mongoose.Error) => {
+      if (err) {
+        return reject(new DatabaseError(500, "Error: News creation failed"));
+      } else {
+        resolve(newsPiece);
+      }
+
+    });
+
+  });
+};
