@@ -8,8 +8,8 @@ export type NewsModel = mongoose.Document & {
 };
 
 const newsSchema = new mongoose.Schema({
+   author: { type: mongoose.Schema.Types.ObjectId, ref: "User",  },
    body: String,
-   sender: { type: mongoose.Schema.Types.ObjectId, ref: "User",  },
    title: String,
 }, { timestamps: true });
 
