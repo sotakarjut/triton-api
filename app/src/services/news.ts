@@ -10,7 +10,7 @@ import logger from "../util/logger";
 export let getNews = () => {
    return new Promise ((resolve, reject) => {
     News.find()
-    .populate("author", "name")
+    .populate("author", "profile.name")
     .exec((err: mongoose.Error, news: NewsModel[]) => {
       if (err) {
         logger.error(err);
