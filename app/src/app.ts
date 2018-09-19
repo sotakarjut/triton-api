@@ -93,5 +93,6 @@ app.post(API_PREFIX + "/purge/all", maintenanceController.postPurgeAll);
 app.post(API_PREFIX + "/purge/messages", maintenanceController.postPurgeMessages);
 app.post(API_PREFIX + "/purge/roles", maintenanceController.postPurgeRoles);
 app.post(API_PREFIX + "/purge/users", maintenanceController.postPurgeUsers);
+app.post(API_PREFIX + "/purge/news", maintenanceController.postPurgeNews);
 
 export default app;

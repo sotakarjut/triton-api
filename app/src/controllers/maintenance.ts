@@ -1,7 +1,7 @@
 import { Promise } from "bluebird";
 import { Request, Response } from "express";
 
-import { purgeAll, purgeMessages, purgeRoles, purgeUsers } from "../services/maintenance";
+import { purgeAll, purgeMessages, purgeNews, purgeRoles, purgeUsers } from "../services/maintenance";
 
 import { DatabaseError } from "../util/error";
 
@@ -55,6 +55,20 @@ export let postPurgeRoles = (req: Request, res: Response) => {
  */
 export let postPurgeMessages = (req: Request, res: Response) => {
   purgeMessages().then( () => {
+    return res.status(200).send("Database purged");
+  }).catch((err: DatabaseError) => {
+    return res.status(err.statusCode).send(err.message);
+  });
+};
+
+/**
+ * @api {post} purge/news Purge messages from  the database.
+ * @apiGroup Maintenance
+ * @apiDescription
+ * Removes all news from the database, use with caution
+ */
+export let postPurgeNews = (req: Request, res: Response) => {
+  purgeNews().then( () => {
     return res.status(200).send("Database purged");
   }).catch((err: DatabaseError) => {
     return res.status(err.statusCode).send(err.message);
