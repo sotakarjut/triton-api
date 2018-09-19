@@ -43,3 +43,22 @@ export let createNews = (userId: mongoose.Schema.Types.ObjectId, data: any) => {
 
   });
 };
+
+export let editNews = (userId: mongoose.Schema.Types.ObjectId,
+                       newsId: mongoose.Schema.Types.ObjectId,
+                       data: any) => {
+  return new Promise ((resolve, reject) => {
+    News.findById(newsId, (newsSearchError: mongoose.Error, foundNews: NewsModel) => {
+      foundNews.title = data.title;
+      foundNews.body = data.newsBody;
+      foundNews.save( (err: mongoose.Error) => {
+        if (err) {
+          return reject(new DatabaseError(500, "Error: News creation failed"));
+        } else {
+          resolve(foundNews);
+        }
+
+      });
+    });
+  });
+};

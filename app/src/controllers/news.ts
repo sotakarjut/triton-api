@@ -6,7 +6,7 @@ import { default as User, UserModel } from "../models/User";
 
 import { DatabaseError } from "../util/error";
 
-import { createNews, getNews } from "../services/news";
+import { createNews, editNews, getNews } from "../services/news";
 
 const request = require("express-validator");
 
@@ -50,6 +50,37 @@ export let postNews = (req: Request, res: Response) => {
     return res.status(400).json({errors: req.validationErrors()});
   }
   createNews(req.user._id, req.body).then( (message: any) => {
+     return res.status(200).send(message);
+  }).catch( (err: DatabaseError) => {
+    return res.status(err.statusCode).send(err.message);
+  });
+
+};
+
+/**
+ * @api {put} news/:id Edits an existing piece of news
+ * @apiGroup News
+ * @apiHeader {String} Authorization Bearer jwt-token.
+ * @apiDescription
+ * Modifies an existing news piece. Existing content will be replaced by the
+ * provided. Author still stays the same.
+ * @apiParam {String} id ObjectId of the newss piece
+ * @apiParam {String} title Title of the news piece (required)
+ * @apiParam {String} newsBody Body text for the news piece (required)
+ *
+ * @apiError (400) {Object} Errors The request did not contain alla necessary data.
+ * @apiError (500) DatabaseError The database search failed.
+ * @apiSuccess (200) {Object} news The piece of news that was saved to the database.
+ */
+
+export let putNews = (req: Request, res: Response) => {
+  req.assert("title", "Title can't be blank").notEmpty();
+  req.assert("newsBody", "newsBody can't be blank").notEmpty();
+
+  if (req.validationErrors()) {
+    return res.status(400).json({errors: req.validationErrors()});
+  }
+  editNews(req.user._id, req.params.id, req.body).then( (message: any) => {
      return res.status(200).send(message);
   }).catch( (err: DatabaseError) => {
     return res.status(err.statusCode).send(err.message);

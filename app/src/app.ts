@@ -76,6 +76,7 @@ app.post(API_PREFIX + "/messages", authenticateFunction, messageController.postN
 // News routes
 app.get(API_PREFIX + "/news",  newsController.getAllNews);
 app.post(API_PREFIX + "/news", authenticateFunction, newsController.postNews);
+app.put(API_PREFIX + "/news/:id", authenticateFunction, newsController.putNews);
 
 // Testing routes
 app.get(API_PREFIX + "/users", testingController.getUsers);
