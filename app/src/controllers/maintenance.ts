@@ -12,8 +12,8 @@ import { DatabaseError } from "../util/error";
  * Removes all documents from the database, use with caution
  */
 export let postPurgeAll = (req: Request, res: Response) => {
-  purgeAll().then( () => {
-    return res.status(200).send("Database purged");
+  purgeAll().then( (message) => {
+    return res.status(200).send(message);
   }).catch((err: DatabaseError) => {
     return res.status(err.statusCode).send(err.message);
   });
@@ -26,8 +26,8 @@ export let postPurgeAll = (req: Request, res: Response) => {
  * Removes all users from the database, use with caution
  */
 export let postPurgeUsers = (req: Request, res: Response) => {
-  purgeUsers().then( () => {
-    return res.status(200).send("Database purged");
+  purgeUsers().then( (message) => {
+    return res.status(200).send(message);
   }).catch((err: DatabaseError) => {
     return res.status(err.statusCode).send(err.message);
   });
@@ -40,8 +40,8 @@ export let postPurgeUsers = (req: Request, res: Response) => {
  * Removes all roles from the database, use with caution
  */
 export let postPurgeRoles = (req: Request, res: Response) => {
-  purgeRoles().then( () => {
-    return res.status(200).send("Database purged");
+  purgeRoles().then( (message) => {
+    return res.status(200).send(message);
   }).catch((err: DatabaseError) => {
     return res.status(err.statusCode).send(err.message);
   });
@@ -54,8 +54,8 @@ export let postPurgeRoles = (req: Request, res: Response) => {
  * Removes all messages from the database, use with caution
  */
 export let postPurgeMessages = (req: Request, res: Response) => {
-  purgeMessages().then( () => {
-    return res.status(200).send("Database purged");
+  purgeMessages().then( (message) => {
+    return res.status(200).send(message);
   }).catch((err: DatabaseError) => {
     return res.status(err.statusCode).send(err.message);
   });
@@ -68,8 +68,8 @@ export let postPurgeMessages = (req: Request, res: Response) => {
  * Removes all news from the database, use with caution
  */
 export let postPurgeNews = (req: Request, res: Response) => {
-  purgeNews().then( () => {
-    return res.status(200).send("Database purged");
+  purgeNews().then( (message) => {
+    return res.status(200).send(message);
   }).catch((err: DatabaseError) => {
     return res.status(err.statusCode).send(err.message);
   });
