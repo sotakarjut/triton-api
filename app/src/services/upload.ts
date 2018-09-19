@@ -41,8 +41,7 @@ export let readNewsCsv = (fileData: string) => {
 
 const addUserIdToNews = (piece: any) => {
   return new Promise ( (resolve, reject) => {
-    logger.info(JSON.stringify(piece));
-    User.findOne({name: piece.name}, (userSearchError: mongoose.Error, user: UserModel) => {
+    User.findOne({"profile.name": piece.author}, (userSearchError: mongoose.Error, user: UserModel) => {
       if (userSearchError) {
         return reject(new DatabaseError(500, "Error: User search failed"));
       } else if (!user) {
