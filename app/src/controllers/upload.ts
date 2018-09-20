@@ -10,7 +10,7 @@ import { default as News, newsImportFields, NewsModel } from "../models/News";
 import { default as Role, roleImportFields, RoleModel } from "../models/Role";
 import { default as User, userImportFields, UserModel } from "../models/User";
 
-import { readNewsCsv } from "../services/upload";
+import { readNewsCsv, saveMessageCsv } from "../services/upload";
 import logger from "../util/logger";
 
 import { APIError, DatabaseError  } from "../util/error";
@@ -269,6 +269,40 @@ export let getNewsTemplate = (req: Request, res: Response) => {
  */
 export let getMessagesTemplate = (req: Request, res: Response) => {
   return sendCSV(messageImportFields, res, "message.csv");
+};
+
+/**
+ * @api {post} upload/messages Upload messages
+ * @apiGroup Upload
+ * @apiHeader {json} CSV header:
+ *   {
+ *       Content-Type: "multipart/form-data"
+ *   }
+ *
+ * @apiDescription Upload the csv file containing data for messages. The csv file must be in the same
+ * format as the template file.
+ * There is yet no support for uploading message chains. That will be added later down the line.
+ * @apiParam {String} name Name of the new mailing list
+ * @apiSuccess (200) {String} Response Information about how many messages were created.
+ * @apiError (400) {String} Error Empty file was uploaded
+ * @apiError (400) {String} Error No users could be created
+ * @apiError (400) {String} Error User upload failed
+ */
+export let postUploadMessages = (req: Request, res: Response) => {
+  if (!req.files || !req.files.file) {
+    return res.status(400).send("No files were uploaded.");
+  }
+  const file = req.files.file as UploadedFile;
+
+  if (!file.data) {
+    return res.status(400).send("You uploaded an empty file!");
+  }
+  saveMessageCsv(file.data.toString()).then(() => {
+    return res.status(200).send("Messages succesfully uploaded");
+  }).catch((err: APIError) => {
+    return res.status(err.statusCode).send(err.message);
+  });
+
 };
 
 // Helper function used for csv parsing and fiel sending.
