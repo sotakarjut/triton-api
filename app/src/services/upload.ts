@@ -27,7 +27,7 @@ export let readNewsCsv = (fileData: string) => {
         News.create(newsPromises, (newsAddError: mongoose.Error, createdNews: NewsModel[]) => {
           if (newsAddError) {
             return reject(new DatabaseError(500, "Error: News adding failed"));
-          } else if (!news) {
+          } else if (!createdNews) {
             return reject(new DatabaseError(404, "Error: Author user not found."));
           } else {
             resolve(createdNews.length);
