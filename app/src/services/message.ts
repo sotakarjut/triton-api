@@ -77,6 +77,24 @@ export let getMailingLists = () => {
   });
 };
 
+export let getLatest = () => {
+  return new Promise ((resolve, reject) => {
+    Message.find()
+    .sort({_id: -1})
+    .limit(10)
+    .select("recipient createdAt")
+    .populate({path: "recipient", select: "username"})
+    .exec((error, messages) => {
+      if (error) {
+        return reject(new DatabaseError(500, "Error: Database error while getting messages"));
+      } else {
+        logger.debug(JSON.stringify(messages));
+        return resolve(messages);
+      }
+    });
+  });
+};
+
 const recipientIsMailingList = (recipientId: mongoose.Schema.Types.ObjectId) => {
   return new Promise((resolve, reject) => {
     MailingList.findById(recipientId , (err: mongoose.Error, mailingList: MailingListModel) => {

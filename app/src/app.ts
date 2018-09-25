@@ -74,6 +74,7 @@ app.post(API_PREFIX + "/upload/messages", uploadController.postUploadMessages);
 app.get(API_PREFIX + "/mailinglists", messageController.getAllMailingLists);
 app.get(API_PREFIX + "/messages", authenticateFunction, messageController.getMessages);
 app.post(API_PREFIX + "/messages", authenticateFunction, messageController.postNewMessage);
+app.get(API_PREFIX + "/messages/latest", messageController.getLatestMessages);
 
 // News routes
 app.get(API_PREFIX + "/news",  newsController.getAllNews);
