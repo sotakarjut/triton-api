@@ -88,22 +88,30 @@ const addUserIdToNews = (piece: any) => {
 const addIdsToMessage = (message: any) => {
   return new Promise ( (resolve, reject) => {
     logger.debug(JSON.stringify( message));
-    User.find({username: { $in: [ message.sender.toLowerCase(), message.recipient.toLowerCase()]}},
-      (userSearchError: mongoose.Error, users: UserModel[]) => {
-      if (userSearchError) {
-        logger.error(userSearchError.message);
+    User.findOne({username: message.sender.toLowerCase()},
+      (senderSearchError: mongoose.Error, sender: UserModel) => {
+      if (senderSearchError) {
         return reject(new DatabaseError(500, "Error: User search failed"));
-      } else if (!users || users.length !== 2) {
-        return reject(new DatabaseError(404, "Error: Sender or recipient not found."));
+      } else if (!sender ) {
+        return reject(new DatabaseError(404, "Error: Sender not found."));
       } else {
-        logger.debug(users);
-        const messageWithIDs = {
-          body: message.body,
-          recipient: users[1]._id,
-          sender: users[0]._id,
-          title: message.title
-        };
-        resolve(messageWithIDs);
+        logger.debug(sender);
+        User.findOne({username: message.recipient.toLowerCase()},
+          (recipientSearchError: mongoose.Error, recipient: UserModel) => {
+          if (recipientSearchError) {
+            return reject(new DatabaseError(500, "Error: User search failed"));
+          } else if (!recipient ) {
+            return reject(new DatabaseError(404, "Error: Sender not found."));
+          } else {
+            const messageWithIDs = {
+              body: message.body,
+              recipient: recipient._id,
+              sender: sender._id,
+              title: message.title
+            };
+            resolve(messageWithIDs);
+          }
+        });
       }
     });
   });
