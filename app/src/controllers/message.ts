@@ -69,7 +69,7 @@ export let getMessages = (req: Request, res: Response) => {
  * Returns the timestamp and recipient of the 10 latest messages
  *
  * @apiError (500) DatabaseError The database search failed.
- * @apiSuccess (200) {Object[]} messages An array containing at max 10 message recipients and timestamps
+ * @apiSuccess (200) {Object[]} messages An array containing at max 10 messages with recipient username and profile.name and timestamps.
  */
 export let getLatestMessages = (req: Request, res: Response) => {
 

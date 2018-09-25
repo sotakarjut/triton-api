@@ -83,7 +83,7 @@ export let getLatest = () => {
     .sort({_id: -1})
     .limit(10)
     .select("recipient createdAt")
-    .populate({path: "recipient", select: "username"})
+    .populate({path: "recipient", select: "username profile.name"})
     .exec((error, messages) => {
       if (error) {
         return reject(new DatabaseError(500, "Error: Database error while getting messages"));
