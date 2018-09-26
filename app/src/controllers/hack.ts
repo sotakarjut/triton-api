@@ -41,7 +41,7 @@ export let postInitiateHacking = (req: Request, res: Response) => {
  * Posts a new message as the user who is being hacked.
  * @apiParam {String} title Title of the message (required)
  * @apiParam {String} messageBody Message body
- * @apiParam {String} recipient Username of the message's recipient (required)
+ * @apiParam {String} recipientId Id of the message's recipient (required)
  * @apiParam {String} replyTo Optional parameter Id of the message this is a reply to.
  * @apiParam {String} targetId Id of the hacking target
  *
