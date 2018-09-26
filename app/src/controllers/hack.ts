@@ -53,7 +53,7 @@ export let postInitiateHacking = (req: Request, res: Response) => {
 export let postNewMessage = (req: Request, res: Response) => {
 
   req.assert("title", "Title cant be blank").notEmpty();
-  req.assert("recipient", "Title cant be blank").notEmpty();
+  req.assert("recipientId", "RecipientId cant be blank").notEmpty();
 
   if (req.validationErrors()) {
     return res.status(400).send("Error: Missing data");
