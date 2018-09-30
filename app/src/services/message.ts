@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 
 import { default as MailingList, MailingListModel } from "../models/MailingList";
 import { default as Message, MessageModel } from "../models/Message";
+import { default as Role, RoleModel } from "../models/Role";
 import { default as User, UserModel } from "../models/User";
 
 import { APIError, DatabaseError } from "../util/error";
@@ -77,19 +78,30 @@ export let getMailingLists = () => {
   });
 };
 
-export let getLatest = () => {
+export let getLatest = (roleFilter: string = undefined) => {
   return new Promise ((resolve, reject) => {
     Message.find()
     .sort({_id: -1})
     .limit(10)
     .select("recipient createdAt")
-    .populate({path: "recipient", select: "username profile.name"})
+    .populate({path: "recipient", select: "username profile.name profile.role"})
+    .populate({path: "recipient.role", select: "name"})
     .exec((error, messages) => {
       if (error) {
         return reject(new DatabaseError(500, "Error: Database error while getting messages"));
       } else {
         logger.debug(JSON.stringify(messages));
-        return resolve(messages);
+        if (roleFilter) {
+          logger.debug("We want to filter messages");
+          Role.findOne({name: roleFilter}, (roleSearchError: mongoose.Error, role: RoleModel) => {
+            const filteredMessages = messages.filter((message: MessageModel) => {
+              return role._id.equals(message.recipient.profile.role._id);
+            });
+            return resolve(filteredMessages);
+          });
+        } else {
+          return resolve(messages);
+        }
       }
     });
   });
