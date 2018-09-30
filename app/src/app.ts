@@ -75,6 +75,7 @@ app.get(API_PREFIX + "/mailinglists", messageController.getAllMailingLists);
 app.get(API_PREFIX + "/messages", authenticateFunction, messageController.getMessages);
 app.post(API_PREFIX + "/messages", authenticateFunction, messageController.postNewMessage);
 app.get(API_PREFIX + "/messages/latest", messageController.getLatestMessages);
+app.get(API_PREFIX + "/messages/latest/npc", messageController.getLatestNPCMessages);
 
 // News routes
 app.get(API_PREFIX + "/news",  newsController.getAllNews);

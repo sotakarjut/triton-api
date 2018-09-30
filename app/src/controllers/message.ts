@@ -82,6 +82,25 @@ export let getLatestMessages = (req: Request, res: Response) => {
 };
 
 /**
+ * @api {get} messages/latest/npc 10 latest messages that NPC:s received
+ * @apiGroup Messages
+ * @apiDescription
+ * Returns the timestamp and recipient of the 10 latest messages that were sent to NPC:s
+ *
+ * @apiError (500) DatabaseError The database search failed.
+ * @apiSuccess (200) {Object[]} messages An array containing at max 10 messages with recipient username and profile.name and timestamps.
+ */
+export let getLatestNPCMessages = (req: Request, res: Response) => {
+
+  getLatest("NPC").then( (messages: any) => {
+     return res.status(200).send(messages);
+  }).catch( (err: DatabaseError) => {
+    return res.status(err.statusCode).send(err.message);
+  });
+
+};
+
+/**
  * @api {get} mailinglists Get all messages
  * @apiGroup Messages
  * @apiHeader {String} Authorization Bearer jwt-token.
