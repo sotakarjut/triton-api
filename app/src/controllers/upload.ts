@@ -131,7 +131,7 @@ export let postUsers = (req: Request, res: Response) => {
               picture: data.picture,
               role: foundRole._id,
               security_level: data.security_level,
-              title: data.class
+              title: data.title
             },
             username: data.username,
           };
