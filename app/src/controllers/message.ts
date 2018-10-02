@@ -82,17 +82,23 @@ export let getLatestMessages = (req: Request, res: Response) => {
 };
 
 /**
- * @api {get} messages/latest/npc 10 latest messages that NPC:s received
+ * @api {get} messages/latest/:role 10 latest messages that the specified role received
  * @apiGroup Messages
  * @apiDescription
- * Returns the timestamp and recipient of the 10 latest messages that were sent to NPC:s
+ * Returns the timestamp and recipient of the 10 latest messages that were sent to the specified role
  *
+ * @apiParam {String} role Name of the role requested.
+ * @apiError (400) MissingData The request did not contain alla necessary data.
  * @apiError (500) DatabaseError The database search failed.
  * @apiSuccess (200) {Object[]} messages An array containing at max 10 messages with recipient username and profile.name and timestamps.
  */
-export let getLatestNPCMessages = (req: Request, res: Response) => {
+export let getLatestMessagesByRole = (req: Request, res: Response) => {
+  req.assert("role", "You must specify a role").notEmpty();
 
-  getLatest("NPC").then( (messages: any) => {
+  if (req.validationErrors()) {
+    return res.status(400).json({errors: req.validationErrors()});
+  }
+  getLatest(req.params.role).then( (messages: any) => {
      return res.status(200).send(messages);
   }).catch( (err: DatabaseError) => {
     return res.status(err.statusCode).send(err.message);
