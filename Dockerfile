@@ -2,14 +2,14 @@ FROM node:latest
 
 ARG PORT
 
-RUN mkdir /app && \
-    groupadd -r nodeapp && \
-    useradd -r -m -d /app -g nodeapp nodeapp && \
-    chown -R nodeapp:nodeapp /app
-
-WORKDIR /app
+RUN groupadd -r nodeapp && \
+    useradd -r -m -d /app -g nodeapp nodeapp
 
 COPY ./app/ /app/
+
+RUN chown -R nodeapp:nodeapp /app
+
+WORKDIR /app
 
 USER nodeapp
 
