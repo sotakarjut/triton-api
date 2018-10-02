@@ -94,10 +94,16 @@ export let getLatest = (roleFilter: string = undefined) => {
         if (roleFilter) {
           logger.debug("We want to filter messages");
           Role.findOne({name: roleFilter}, (roleSearchError: mongoose.Error, role: RoleModel) => {
-            const filteredMessages = messages.filter((message: MessageModel) => {
-              return role._id.equals(message.recipient.profile.role._id);
-            });
-            return resolve(filteredMessages);
+            if (roleSearchError) {
+              return reject(new DatabaseError(500, "Error: Database error while getting role"));
+            } else if (!role) {
+               return reject(new DatabaseError(404, "Error: Role not found"));
+            } else {
+              const filteredMessages = messages.filter((message: MessageModel) => {
+                return role._id.equals(message.recipient.profile.role._id);
+              });
+              return resolve(filteredMessages);
+            }
           });
         } else {
           return resolve(messages);
