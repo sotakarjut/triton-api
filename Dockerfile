@@ -4,16 +4,17 @@ ARG PORT
 
 RUN mkdir /app && \
     groupadd -r nodeapp && \
-    useradd -r -g nodeapp nodeapp
+    useradd -r -m -d /app -g nodeapp nodeapp && \
+    chown -R nodeapp:nodeapp /app
 
 WORKDIR /app
 
 COPY ./app/ /app/
 
+USER nodeapp
+
 RUN npm install && \
-    npm run build && \
-    chown -R nodeapp:nodeapp /app
+    npm run build
 
 EXPOSE $PORT
-USER nodeapp
 CMD ["npm", "start"]
