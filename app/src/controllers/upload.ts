@@ -319,6 +319,7 @@ const validateUserData = (data: any) => {
 
 const parseMailingListmembers = (members: string[]) => {
   return new Promise((resolve, reject) => {
+    members = members.map((m) =>  m.toLowerCase());
     User.find({username: {$in: members}})
     .select("_id")
     .exec((userSearchError: mongoose.Error, users: mongoose.Schema.Types.ObjectId[]) => {
