@@ -9,22 +9,24 @@ import { default as User, UserModel } from "../models/User";
 import { APIError, DatabaseError } from "../util/error";
 import logger from "../util/logger";
 
-export let getMessagesForUser = (id: mongoose.Types.ObjectId) => {
+export let getMessagesForUser = (id: mongoose.Schema.Types.ObjectId) => {
   return new Promise ((resolve, reject) => {
-    Message.find()
-    .or([{recipient: id}, {sender: id}])
-    .populate("sender")
-    .exec((err: mongoose.Error, messages: MessageModel[]) => {
-      if (err) {
-        logger.error(err);
-        return reject( new DatabaseError(404, "Error: Could not find messages"));
-      }
-      logger.debug("Found " +  messages.length + " messages.");
-      const messageMap: any = {};
-      messages.forEach((message: MessageModel ) => {
-        messageMap[message._id] = message;
+    getMailingListMemberShips(id).then((listIds: mongoose.Schema.Types.ObjectId[]) => {
+      Message.find()
+      .or([{recipient: id}, {sender: id}, { recipientList: { $in: [ listIds ] }}])
+      .populate("sender")
+      .exec((err: mongoose.Error, messages: MessageModel[]) => {
+        if (err) {
+          logger.error(err);
+          return reject( new DatabaseError(404, "Error: Could not find messages"));
+        }
+        logger.debug("Found " +  messages.length + " messages.");
+        const messageMap: any = {};
+        messages.forEach((message: MessageModel ) => {
+          messageMap[message._id] = message;
+        });
+        return resolve(messageMap);
       });
-      return resolve(messageMap);
     });
   });
 };
@@ -85,12 +87,11 @@ export let getLatest = (roleFilter: string = undefined) => {
     .limit(10)
     .select("recipient createdAt")
     .populate({path: "recipient", select: "username profile.name profile.role"})
-    .populate({path: "recipient.role", select: "name"})
+    .populate({path: "recipientList", select: "name"})
     .exec((error, messages) => {
       if (error) {
         return reject(new DatabaseError(500, "Error: Database error while getting messages"));
       } else {
-        logger.debug(JSON.stringify(messages));
         if (roleFilter) {
           logger.debug("We want to filter messages");
           Role.findOne({name: roleFilter}, (roleSearchError: mongoose.Error, role: RoleModel) => {
@@ -140,6 +141,7 @@ const sendMessageToUser = (senderId: mongoose.Schema.Types.ObjectId, messageData
           _id: mongoose.Types.ObjectId(),
           body: messageData.messageBody,
           recipient: foundRecipient._id,
+          recipientList: null,
           replyTo: messageData.replyTo,
           sender: senderId,
           title: messageData.title
@@ -165,16 +167,35 @@ const sendMessageToMailingList = (senderId: mongoose.Schema.Types.ObjectId, mess
       } else if (list.members.length === 0) {
         return reject(new DatabaseError(404, "Error: MailingList empty, no recipients found"));
       } else {
-        logger.debug(list);
-        const sentMessages = list.members.map( (recipient) => {
-          messageData.recipientId = recipient;
-          return sendMessageToUser(senderId, messageData);
+        const message = new Message({
+          _id: mongoose.Types.ObjectId(),
+          body: messageData.messageBody,
+          recipient: null,
+          recipientList: list._id,
+          replyTo: messageData.replyTo,
+          sender: senderId,
+          title: messageData.title
         });
-        Promise.all(sentMessages).then((messages: any) => {
-          return resolve(messages);
-        }).catch( (messageSendingError: APIError) => {
-          return reject(messageSendingError);
+        message.save((err: mongoose.Error) => {
+          if (err) {
+            return reject(new DatabaseError(500, "Error: Message saving failed"));
+          }
+          return resolve("Added message" + message );
         });
+      }
+    });
+  });
+};
+
+const getMailingListMemberShips = (userId: mongoose.Schema.Types.ObjectId) => {
+  return new Promise ((resolve, reject) => {
+    MailingList.find({members: userId})
+    .exec((mailingListSearchError: mongoose.Error, lists: MailingListModel[]) => {
+       if (mailingListSearchError) {
+        return reject(new DatabaseError(500, "Error: MailingList search failed"));
+      } else {
+        const listIds: mongoose.Schema.Types.ObjectId[] = lists.map((m) => m._id);
+        return resolve(listIds);
       }
     });
   });

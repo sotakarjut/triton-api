@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { MailingListModel } from "./MailingList";
 import { UserModel } from "./User";
 export type MessageModel = mongoose.Document & {
   _id: number,
@@ -12,6 +13,7 @@ export type MessageModel = mongoose.Document & {
 const messageSchema = new mongoose.Schema({
    body: String,
    recipient: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+   recipientList: { type: mongoose.Schema.Types.ObjectId, ref: "MailingList" },
    replyTo: { type: mongoose.Schema.Types.ObjectId, ref: "Message" },
    sender: { type: mongoose.Schema.Types.ObjectId, ref: "User",  },
    title: String,
