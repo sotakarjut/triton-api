@@ -86,7 +86,6 @@ const addUserIdToNews = (piece: any) => {
 
 const addIdsToMessage = (message: any) => {
   return new Promise ( (resolve, reject) => {
-    logger.debug(JSON.stringify( message));
     User.findOne({username: message.sender.toLowerCase()},
       (senderSearchError: mongoose.Error, sender: UserModel) => {
       if (senderSearchError) {
@@ -94,7 +93,6 @@ const addIdsToMessage = (message: any) => {
       } else if (!sender ) {
         return reject(new DatabaseError(404, "Error: Sender not found."));
       } else {
-        logger.debug(sender);
         User.findOne({username: message.recipient.toLowerCase()},
           (recipientSearchError: mongoose.Error, recipient: UserModel) => {
           if (recipientSearchError) {
