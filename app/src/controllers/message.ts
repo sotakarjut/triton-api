@@ -82,7 +82,7 @@ export let getLatestMessages = (req: Request, res: Response) => {
 };
 
 /**
- * @api {get} messages/latest/:role 10 latest messages that the specified role received
+ * @api {get} messages/latest/role/:name 10 latest messages that the specified role name
  * @apiGroup Messages
  * @apiDescription
  * Returns the timestamp and recipient of the 10 latest messages that were sent to the specified role
@@ -93,7 +93,7 @@ export let getLatestMessages = (req: Request, res: Response) => {
  * @apiSuccess (200) {Object[]} messages An array containing at max 10 messages with recipient username and profile.name and timestamps.
  */
 export let getLatestMessagesByRole = (req: Request, res: Response) => {
-  req.assert("role", "You must specify a role").notEmpty();
+  req.assert("name", "You must specify a name for the role").notEmpty();
 
   if (req.validationErrors()) {
     return res.status(400).json({errors: req.validationErrors()});

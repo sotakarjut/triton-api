@@ -87,7 +87,7 @@ export let getLatest = (roleFilter: string = undefined) => {
     .limit(10)
     .select("recipient createdAt")
     .populate({path: "recipient", select: "username profile.name profile.role"})
-    .populate({path: "recipientList", select: "name"})
+    // .populate({path: "recipientList", select: "name"})
     .exec((error, messages) => {
       if (error) {
         return reject(new DatabaseError(500, "Error: Database error while getting messages"));
