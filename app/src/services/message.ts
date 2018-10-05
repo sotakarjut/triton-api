@@ -114,6 +114,23 @@ export let getLatest = (roleFilter: string = undefined) => {
   });
 };
 
+export let getLatestForList = (roleFilter: string = undefined) => {
+  return new Promise ((resolve, reject) => {
+    Message.find({ recipientList: { $ne: null } })
+    .sort({_id: -1})
+    .limit(10)
+    .select("recipientList createdAt")
+    .populate("recipientList", "name")
+    .exec((error, messages) => {
+      if (error) {
+        return reject(new DatabaseError(500, "Error: Database error while getting messages"));
+      } else {
+        return resolve(messages);
+      }
+    });
+  });
+};
+
 const recipientIsMailingList = (recipientId: mongoose.Schema.Types.ObjectId) => {
   return new Promise((resolve, reject) => {
     MailingList.findById(recipientId , (err: mongoose.Error, mailingList: MailingListModel) => {

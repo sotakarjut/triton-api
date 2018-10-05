@@ -7,7 +7,7 @@ import { default as User, UserModel } from "../models/User";
 import { DatabaseError } from "../util/error";
 import logger from "../util/logger";
 
-import { getLatest, getMailingLists, getMessagesForUser, postMessageAsUser } from "../services/message";
+import { getLatest, getLatestForList, getMailingLists, getMessagesForUser, postMessageAsUser } from "../services/message";
 
 const request = require("express-validator");
 /**
@@ -99,6 +99,24 @@ export let getLatestMessagesByRole = (req: Request, res: Response) => {
     return res.status(400).json({errors: req.validationErrors()});
   }
   getLatest(req.params.role).then( (messages: any) => {
+     return res.status(200).send(messages);
+  }).catch( (err: DatabaseError) => {
+    return res.status(err.statusCode).send(err.message);
+  });
+};
+
+/**
+ * @api {get} messages/latest/mailinglist 10 latest messages
+ * @apiGroup Messages
+ * @apiDescription
+ * Returns the timestamp and recipient of the 10 latest messages that were sent to mailing lists
+ *
+ * @apiError (500) DatabaseError The database search failed.
+ * @apiSuccess (200) {Object[]} messages An array containing at max 10 messages with mailing list name and timestamp
+ */
+export let getLatestListMessages = (req: Request, res: Response) => {
+
+  getLatestForList().then( (messages: any) => {
      return res.status(200).send(messages);
   }).catch( (err: DatabaseError) => {
     return res.status(err.statusCode).send(err.message);

@@ -75,6 +75,7 @@ app.get(API_PREFIX + "/mailinglists", messageController.getAllMailingLists);
 app.get(API_PREFIX + "/messages", authenticateFunction, messageController.getMessages);
 app.post(API_PREFIX + "/messages", authenticateFunction, messageController.postNewMessage);
 app.get(API_PREFIX + "/messages/latest", messageController.getLatestMessages);
+app.get(API_PREFIX + "/messages/latest/mailinglist", messageController.getLatestListMessages);
 app.get(API_PREFIX + "/messages/latest/role/:name", messageController.getLatestMessagesByRole);
 
 // News routes
