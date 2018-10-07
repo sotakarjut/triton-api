@@ -98,7 +98,7 @@ export let getLatestMessagesByRole = (req: Request, res: Response) => {
   if (req.validationErrors()) {
     return res.status(400).json({errors: req.validationErrors()});
   }
-  getLatest(req.params.role).then( (messages: any) => {
+  getLatest(req.params.name).then( (messages: any) => {
      return res.status(200).send(messages);
   }).catch( (err: DatabaseError) => {
     return res.status(err.statusCode).send(err.message);
