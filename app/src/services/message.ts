@@ -82,7 +82,7 @@ export let getMailingLists = () => {
 
 export let getLatest = (roleFilter: string = undefined) => {
   return new Promise ((resolve, reject) => {
-    Message.find()
+    Message.find({recipient: { $ne: null } })
     .sort({_id: -1})
     .limit(10)
     .select("recipient createdAt")
