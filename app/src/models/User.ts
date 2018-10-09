@@ -84,3 +84,13 @@ export const userImportFields = [
     "role",
     "security_level"
   ];
+
+export const userCsvDumpFields = [
+    "username",
+    "balance",
+    "title",
+    "group",
+    "name",
+    "picture",
+    "security_level"
+  ];

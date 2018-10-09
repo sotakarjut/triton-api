@@ -62,6 +62,7 @@ app.get("/upload", uploadController.getUpload);
 app.get(API_PREFIX + "/upload/roles", uploadController.getRolesTemplate);
 app.post(API_PREFIX + "/upload/roles", uploadController.postRoles);
 app.get(API_PREFIX + "/upload/users", uploadController.getUsersTemplate);
+app.get(API_PREFIX + "/upload/userdata", uploadController.getUserCsv);
 app.post(API_PREFIX + "/upload/users", uploadController.postUsers);
 app.get(API_PREFIX + "/upload/mailinglist", uploadController.getMailingListTemplate);
 app.post(API_PREFIX + "/upload/mailinglist", uploadController.postMailingList);

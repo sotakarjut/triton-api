@@ -65,6 +65,35 @@ export let saveMessageCsv = (fileData: string) => {
     });
   });
 };
+
+export let getUserData = () => {
+  return new Promise ((resolve, reject) => {
+    User
+    .find()
+    .populate("profile.role name")
+    .exec((err: mongoose.Error, users: UserModel[]) => {
+      if (err) {
+        return reject(new DatabaseError(500, "Error: Could not get users"));
+      } else {
+        const csvUsers = users.map((user) => {
+          const userString = {
+                   balance: user.profile.balance,
+                   group: user.profile.group,
+                   name: user.profile.name,
+                   picture: user.profile.picture,
+                   security_level: user.profile.security_level,
+                   title: user.profile.title,
+                   username: user.username
+                  };
+          return userString;
+        });
+        // logger.debug(JSON.stringify(csvUsers));
+        return resolve(csvUsers);
+      }
+    });
+  });
+};
+
 const addUserIdToNews = (piece: any) => {
   return new Promise ( (resolve, reject) => {
     User.findOne({"profile.name": piece.author}, (userSearchError: mongoose.Error, user: UserModel) => {

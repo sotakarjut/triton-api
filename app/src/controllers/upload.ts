@@ -8,9 +8,9 @@ import { default as MailingList, mailingListImportFields, MailingListModel } fro
 import { messageImportFields } from "../models/Message";
 import { default as News, newsImportFields, NewsModel } from "../models/News";
 import { default as Role, roleImportFields, RoleModel } from "../models/Role";
-import { default as User, userImportFields, UserModel } from "../models/User";
+import { default as User, userCsvDumpFields, userImportFields, UserModel } from "../models/User";
 
-import { readNewsCsv, saveMessageCsv } from "../services/upload";
+import { getUserData, readNewsCsv, saveMessageCsv } from "../services/upload";
 import logger from "../util/logger";
 
 import { APIError, DatabaseError  } from "../util/error";
@@ -159,7 +159,24 @@ export let postUsers = (req: Request, res: Response) => {
   });
 
 };
-
+/**
+ * @api {get} upload/userdata Get existing users
+ * @apiGroup Upload
+ * @apiSuccess (200) {file} userdata.csv Csv-dump of the exising users.
+ *
+ * @apiError (500) {String} Error Users could not be found
+ */
+export let getUserCsv = (req: Request, res: Response) => {
+  getUserData().then((userData) => {
+    const fields: string[] = userCsvDumpFields;
+    const userCsv = json2csv.parse(userData, { fields } );
+    res.set("Content-Disposition", "attachment;filename=userdata.csv");
+    res.set("Content-Type", "application/octet-stream");
+    return res.send(userCsv);
+  }).catch((err: APIError) => {
+    return res.status(err.statusCode).send(err.message);
+  });
+};
 /**
  * @api {post} upload/mailinglist Upload a mailing list
  * @apiGroup Upload
