@@ -4,11 +4,11 @@ import { Request, Response } from "express";
 
 const request = require("express-validator");
 
-import { getHackingDuration } from "../services/hacking";
+import { createAlert, getAlerts, getHackingDuration } from "../services/hacking";
 import { getMessagesForUser, postMessageAsUser } from "../services/message";
 import { APIError, DatabaseError  } from "../util/error";
 /**
- * @api {post} /hack/intiate Stats a hacking "session".
+ * @api {post} /hack/intiate Starts a hacking "session".
  * @apiGroup Hacking
  * @apiDescription
  *
@@ -84,4 +84,36 @@ export let getMessages = (req: Request, res: Response) => {
     return res.status(err.statusCode).send(err.message);
   });
 
+};
+
+/**
+ * @api {post} /hack/finalize Finishes a hacking "session".
+ * @apiGroup Hacking
+ * @apiDescription
+ *
+ * Finalises the hacking session,
+ * notifies the administrators about hacking location (TODO) and
+ *
+ * @apiParam {String} terminalId Id of the terminal where the hacking is taking place.
+ *
+ * @apiError (400) MissingData The request did not contain alla necessary data.
+ * @apiError (403) NotAHacker The user performing the request is not allowed to hack.
+ * @apiError (500) DatabaseError Internal database errer
+ *
+ * @apiSuccess (200)
+ */
+export let postFinalizeHacking = (req: Request, res: Response) => {
+   createAlert(req.user._id, req.body.terminalId).then((alert: any) => {
+     return res.status(200).send(alert);
+  }).catch((err: APIError) => {
+    return res.status(err.statusCode).send(err.message);
+  });
+};
+
+export let getAllAlerts = (req: Request, res: Response) => {
+  getAlerts().then((alerts: any) => {
+    return res.status(200).send(alerts);
+  }).catch((err: APIError) => {
+    return res.status(err.statusCode).send(err.message);
+  });
 };

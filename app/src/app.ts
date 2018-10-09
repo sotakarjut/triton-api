@@ -94,7 +94,8 @@ app.get(API_PREFIX + "/testauth", testingController.getTestauth);
 app.post(API_PREFIX + "/hack/intiate", authenticateFunction, isHacker, hackingController.postInitiateHacking);
 app.post(API_PREFIX + "/hack/messages", authenticateFunction, isHacker, hackingController.postNewMessage);
 app.get(API_PREFIX + "/hack/messages/:targetId", authenticateFunction, isHacker, hackingController.getMessages);
-
+app.post(API_PREFIX + "/hack/finalize", authenticateFunction, isHacker, hackingController.postFinalizeHacking);
+app.get(API_PREFIX + "/hack/alerts", hackingController.getAllAlerts);
 // Maintenance routes
 app.post(API_PREFIX + "/purge/all", maintenanceController.postPurgeAll);
 app.post(API_PREFIX + "/purge/messages", maintenanceController.postPurgeMessages);

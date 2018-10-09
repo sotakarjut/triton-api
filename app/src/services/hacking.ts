@@ -1,12 +1,14 @@
 import { Promise } from "bluebird";
 import mongoose from "mongoose";
 
+import { AlertModel, default as Alert } from "../models/Alert";
 import { default as Role, RoleModel } from "../models/Role";
 import { default as User, UserModel } from "../models/User";
 
-import { getMessagesForUser, postMessageAsUser } from "../services/message";
 import { APIError, DatabaseError } from "../util/error";
 import logger from "../util/logger";
+
+type ObjectId = mongoose.Schema.Types.ObjectId;
 
 const DIFFICULTY_MATRIX: number[][] = [ [60, 60, 60, 60],
                                         [90, 60, 60, 60],
@@ -35,6 +37,31 @@ export let getHackingDuration = (user: UserModel, targetId: mongoose.Types.Objec
         return reject(new DatabaseError(500, "Error: Could not resolve hacking duration"));
       }
       return resolve(duration);
+    });
+  });
+};
+
+export let createAlert = (hackerId: ObjectId, terminal: string) => {
+  return new Promise ( (resolve, reject) => {
+    Alert
+    .create({hacker: hackerId, terminalId: terminal}, (alertCreationError: mongoose.Error, alert: AlertModel) => {
+       if (alertCreationError) {
+        return reject( new DatabaseError(500, alertCreationError.message));
+      } else {
+        return resolve(alert);
+      }
+    });
+  });
+};
+
+export let getAlerts = () => {
+  return new Promise ( (resolve, reject) => {
+    Alert.find((alertSearchError: mongoose.Error, alerts: AlertModel[]) => {
+      if (alertSearchError) {
+        return reject( new DatabaseError(500, alertSearchError.message));
+      } else {
+        return resolve(alerts);
+      }
     });
   });
 };
