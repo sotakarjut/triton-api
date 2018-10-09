@@ -93,6 +93,36 @@ export let getUserData = () => {
     });
   });
 };
+export let updateUsers = (fileData: string) => {
+  return new Promise ( (resolve, reject) => {
+    readCsv(fileData).then((rows: any[]) => {
+      rows.map((row) => {
+        User.findOneAndUpdate({ username: row.username },
+                              { $set:
+                                {
+                                  profile: {
+                                    balance: row.balance,
+                                    group: row.group,
+                                    name: row.name,
+                                    picture: row.picture,
+                                    security_level: row.security_level,
+                                    title: row.title,
+                                  },
+                                  username: row.username
+                                }
+                              },
+                              (userUpdateError: mongoose.Error, user: UserModel) => {
+          if (userUpdateError) {
+          return reject(new DatabaseError(500, "Error: User search failed"));
+          } else {
+          logger.debug("User " + user.username + " updated");
+          }
+        });
+      });
+      return resolve("Users succesfully updated!");
+    });
+  });
+};
 
 const addUserIdToNews = (piece: any) => {
   return new Promise ( (resolve, reject) => {

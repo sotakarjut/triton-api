@@ -10,7 +10,7 @@ import { default as News, newsImportFields, NewsModel } from "../models/News";
 import { default as Role, roleImportFields, RoleModel } from "../models/Role";
 import { default as User, userCsvDumpFields, userImportFields, UserModel } from "../models/User";
 
-import { getUserData, readNewsCsv, saveMessageCsv } from "../services/upload";
+import { getUserData, readNewsCsv, saveMessageCsv, updateUsers } from "../services/upload";
 import logger from "../util/logger";
 
 import { APIError, DatabaseError  } from "../util/error";
@@ -173,6 +173,38 @@ export let getUserCsv = (req: Request, res: Response) => {
     res.set("Content-Disposition", "attachment;filename=userdata.csv");
     res.set("Content-Type", "application/octet-stream");
     return res.send(userCsv);
+  }).catch((err: APIError) => {
+    return res.status(err.statusCode).send(err.message);
+  });
+};
+/**
+ * @api {post} upload/userdata Update existing users
+ * @apiGroup Upload
+ * @apiHeader {json} CSV header:
+ *   {
+ *       Content-Type: "multipart/form-data"
+ *   }
+ *
+ * @apiDescription Upload the csv file containing chages to users.
+ * You should always first get the template from /upload/userdata
+ *
+ * @apiParam {String} name Name of the new mailing list
+ * @apiSuccess (200) {String} Response Information about how many users were updated.
+ * @apiError (400) {String} Error Empty file was uploaded
+ * @apiError (400) {String} Error No users could be created
+ * @apiError (400) {String} Error User upload failed
+ */
+export let postUpdateUserData  = (req: Request, res: Response) => {
+  if (!req.files || !req.files.file) {
+    return res.status(400).send("No files were uploaded.");
+  }
+  const file = req.files.file as UploadedFile;
+
+  if (!file.data) {
+    return res.status(400).send("You uploaded an empty file!");
+  }
+  updateUsers(file.data.toString()).then((result: string) => {
+    return res.status(200).send(result);
   }).catch((err: APIError) => {
     return res.status(err.statusCode).send(err.message);
   });
