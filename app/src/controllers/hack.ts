@@ -100,7 +100,7 @@ export let getMessages = (req: Request, res: Response) => {
  * @apiError (403) NotAHacker The user performing the request is not allowed to hack.
  * @apiError (500) DatabaseError Internal database errer
  *
- * @apiSuccess (200)
+ * @apiSuccess (200) Alert The created alert
  */
 export let postFinalizeHacking = (req: Request, res: Response) => {
    createAlert(req.user._id, req.body.terminalId).then((alert: any) => {
