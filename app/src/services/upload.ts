@@ -97,25 +97,20 @@ export let updateUsers = (fileData: string) => {
   return new Promise ( (resolve, reject) => {
     readCsv(fileData).then((rows: any[]) => {
       rows.map((row) => {
-        User.findOneAndUpdate({ username: row.username },
-                              { $set:
-                                {
-                                  profile: {
-                                    balance: row.balance,
-                                    group: row.group,
-                                    name: row.name,
-                                    picture: row.picture,
-                                    security_level: row.security_level,
-                                    title: row.title,
-                                  },
-                                  username: row.username
-                                }
-                              },
-                              (userUpdateError: mongoose.Error, user: UserModel) => {
+        User.findOne({ username: row.username }, (userUpdateError: mongoose.Error, user: UserModel) => {
           if (userUpdateError) {
-          return reject(new DatabaseError(500, "Error: User search failed"));
+            return reject(new DatabaseError(500, "Error: User search failed"));
+          } else if (!user) {
+            return reject(new DatabaseError(404, "Error: User not found"));
           } else {
-          logger.debug("User " + user.username + " updated");
+            user.profile.balance = row.balance;
+            user.profile.group = row.group;
+            user.profile.name = row.name;
+            user.profile.picture = row.picture;
+            user.profile.role = user.profile.role;
+            user.profile.security_level = row.security_level;
+            user.profile.title = row.title;
+            user.save();
           }
         });
       });
