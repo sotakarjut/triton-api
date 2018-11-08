@@ -1,6 +1,14 @@
 version: "2"
 services:
+  mongodb:
+    image: mongo
+    volumes:
+      - triton_db:/data/db
+    restart: always
+
   server:
+    depends_on:
+      - mongodb
     build: 
       context: .
       args:
@@ -13,11 +21,8 @@ services:
       - "PORT=${INTERNAL_DOCKER_PORT}"
     volumes:
       - triton_logs:/app/log
+    restart: always
 
-  mongodb:
-    image: mongo
-    volumes:
-      - triton_db:/data/db
 
 volumes:
   triton_db:
